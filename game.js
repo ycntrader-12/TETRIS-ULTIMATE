@@ -168,8 +168,9 @@ class ProgressionManager {
       ach.unlocked = true;
       localStorage.setItem('tetris3d_achievements', JSON.stringify(this.achievements));
       showNotification(`SUCCÈS DÉBLOQUÉ : ${ach.name} !`, 'notif-level');
-      if (window._tetrisController && window._tetrisController.audio) {
-        window._tetrisController.audio.playAchievement();
+      if (window._tetrisController) {
+        if (window._tetrisController.audio) window._tetrisController.audio.playAchievement();
+        if (window._tetrisController.voice) window._tetrisController.voice.onAchievement();
       }
     }
   }
@@ -462,8 +463,9 @@ class TetrisGame {
       showNotification('🛡️ BOUCLIER ACTIVÉ !', 'notif-level');
     }
 
-    if (window._tetrisController && window._tetrisController.audio) {
-      window._tetrisController.audio.playPowerUp();
+    if (window._tetrisController) {
+      if (window._tetrisController.audio) window._tetrisController.audio.playPowerUp();
+      if (window._tetrisController.voice) window._tetrisController.voice.onPowerUp(type);
     }
     return true;
   }
@@ -1536,6 +1538,7 @@ class TetrisController {
     this.game.init(this.startLevel, this.selectedMode);
     this.audio.setLevel(this.game.level);
     this.audio.start();
+    this.voice.onGameStart();
 
     // Démarrer auto-switch musique 30s
     if (this.options.autoMusic) {
@@ -1590,6 +1593,7 @@ class TetrisController {
     this.game.init(this.startLevel, this.selectedMode);
     this.audio.setLevel(this.game.level);
     this.audio.start();
+    this.voice.onGameStart();
 
     if (this.options.autoMusic) {
       this.audio.startAutoMusicSwitch((track) => {
@@ -1705,12 +1709,13 @@ class TetrisController {
     if (isTSpin) {
       this.audio.playTSpin();
       showNotification('🎯 T-SPIN !', 'notif-tspin');
-      this.voice.speakText('T-Spin Waa3r !');
+      this.voice.onTSpin(result ? result.tSpinType : null);
     }
 
     if (isB2B) {
       this.audio.playBackToBack();
       setTimeout(() => showNotification('⚡ BACK-TO-BACK !', 'notif-b2b'), 300);
+      this.voice.onBackToBack();
     }
 
     if (linesCleared > 0) {

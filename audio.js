@@ -1192,6 +1192,57 @@ class TetrisVoice {
     }, { rate: 0.85, pitch: 0.7 });
   }
 
+  onTSpin(type) {
+    if (!this.enabled) return;
+    this.say({
+      fr: "T-Spin Réussi !",
+      en: "T-Spin!",
+      ar: "تي سبيين خطير!",
+      es: "¡T-Spin Conseguido!"
+    }, { rate: 1.1, pitch: 1.25 });
+  }
+
+  onBackToBack() {
+    if (!this.enabled) return;
+    this.say({
+      fr: "Back to Back !",
+      en: "Back to Back!",
+      ar: "باك تو باك!",
+      es: "¡Back to Back!"
+    }, { rate: 1.15, pitch: 1.2 });
+  }
+
+  onPowerUp(type) {
+    if (!this.enabled) return;
+    const phrases = {
+      bomb: { fr: "Bombe !", en: "Bomb!", ar: "قنبلة!", es: "¡Bomba!" },
+      freeze: { fr: "Temps ralenti !", en: "Time slow!", ar: "تبطيء الوقت!", es: "¡Ralenti!" },
+      clearline: { fr: "Ligne supprimée !", en: "Line clear!", ar: "مسح الصف!", es: "¡Línea borrada!" },
+      shield: { fr: "Bouclier !", en: "Shield!", ar: "درع الحماية!", es: "¡Escudo!" }
+    };
+    if (phrases[type]) this.say(phrases[type], { rate: 1.1, pitch: 1.2 });
+  }
+
+  onAchievement() {
+    if (!this.enabled) return;
+    this.say({
+      fr: "Succès débloqué !",
+      en: "Achievement Unlocked!",
+      ar: "إنجاز جديد محقق!",
+      es: "¡Logro Desbloqueado!"
+    }, { rate: 1.05, pitch: 1.3 });
+  }
+
+  onGameStart() {
+    if (!this.enabled) return;
+    this.say({
+      fr: "C'est parti !",
+      en: "Let's Go!",
+      ar: "يلا ابدأ اللعب!",
+      es: "¡Vamos a jugar!"
+    }, { rate: 1.05, pitch: 1.1 });
+  }
+
   toggle() {
     this.enabled = !this.enabled;
     if (!this.enabled && this.synth) this.synth.cancel();
