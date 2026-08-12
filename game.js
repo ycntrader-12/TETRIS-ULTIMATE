@@ -1273,6 +1273,7 @@ class TetrisController {
       document.body.classList.remove('rtl-mode');
     }
     this.audio.setAutoMusicInterval(this.options.autoMusic ? this.options.autoMusicInterval : 0);
+    if (this.voice) this.voice.setLanguage(this.options.lang);
     this.updateLanguageUI();
   }
 

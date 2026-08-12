@@ -1059,44 +1059,40 @@ window.TetrisAudio = TetrisAudio;
 
 class TetrisVoice {
   constructor() {
-    this.enabled  = true;
-    this.synth    = window.speechSynthesis || null;
-    this.voice    = null;
-    this.isArabic = false;
+    this.enabled = true;
+    this.synth   = window.speechSynthesis || null;
+    this.voice   = null;
+    this.lang    = 'fr';
 
     if (this.synth) {
-      const pick = () => {
-        const voices = this.synth.getVoices();
-        const arVoice = voices.find(v => v.lang.startsWith('ar'));
-        if (arVoice) {
-          this.voice    = arVoice;
-          this.isArabic = true;
-        } else {
-          this.voice =
-            voices.find(v => v.lang.startsWith('en') && v.name.includes('Google')) ||
-            voices.find(v => v.lang.startsWith('en')) ||
-            voices.find(v => v.lang.startsWith('fr')) ||
-            voices[0] || null;
-          this.isArabic = false;
-        }
-      };
+      const pick = () => this.setLanguage(this.lang);
       if (this.synth.getVoices().length) pick();
       this.synth.onvoiceschanged = pick;
     }
   }
 
-  say(textAr, textEn, { rate = 1.05, pitch = 1.0, vol = 1.0 } = {}) {
+  setLanguage(langCode) {
+    this.lang = langCode || 'fr';
+    if (!this.synth) return;
+    const voices = this.synth.getVoices();
+    const prefMap = { fr: 'fr', en: 'en', ar: 'ar', es: 'es' };
+    const target = prefMap[this.lang] || 'fr';
+    this.voice = voices.find(v => v.lang.startsWith(target)) || voices[0] || null;
+  }
+
+  say(phraseObj, { rate = 1.05, pitch = 1.0, vol = 1.0 } = {}) {
     if (!this.enabled || !this.synth) return;
-    const text = (this.isArabic && textAr) ? textAr : (textEn || textAr);
-    const lang = this.voice ? this.voice.lang : (this.isArabic ? 'ar-SA' : 'en-US');
+    const text = phraseObj[this.lang] || phraseObj.fr || phraseObj.en || '';
+    if (!text) return;
 
     try {
       if (this.synth.speaking) {
         this.synth.cancel();
       }
       const utt = new SpeechSynthesisUtterance(text);
+      const langCodes = { fr: 'fr-FR', en: 'en-US', ar: 'ar-SA', es: 'es-ES' };
       if (this.voice) utt.voice = this.voice;
-      utt.lang   = lang;
+      utt.lang   = langCodes[this.lang] || 'fr-FR';
       utt.rate   = rate;
       utt.pitch  = pitch;
       utt.volume = vol;
@@ -1111,24 +1107,55 @@ class TetrisVoice {
     if (!this.enabled) return;
 
     if (combo >= 6) {
-      this.say('ما كاينش اللي يوقفك! ناضي!', 'UNSTOPPABLE!', { rate: 1.25, pitch: 1.3 });
-    } else if (combo === 5) {
-      this.say('تبارك الله عليك! كتحرق!', 'ON FIRE!', { rate: 1.2, pitch: 1.25 });
-    } else if (combo === 4) {
-      this.say('خارِق لليفل!', 'SUPER COMBO!', { rate: 1.15, pitch: 1.2 });
-    } else if (combo === 3) {
-      this.say('واااعر بزاف!', 'GREAT COMBO!', { rate: 1.1, pitch: 1.15 });
-    } else if (combo === 2) {
-      this.say('زيّد كمل!', 'COMBO!', { rate: 1.05, pitch: 1.1 });
+      this.say({
+        fr: "Combofire imbattable !",
+        en: "Unstoppable Combo!",
+        ar: "ما كاينش اللي يوقفك! ناضي!",
+        es: "¡Combo Imparable!"
+      }, { rate: 1.25, pitch: 1.3 });
+    } else if (combo === 4 || combo === 5) {
+      this.say({
+        fr: "Super Combo !",
+        en: "On Fire!",
+        ar: "تبارك الله عليك! كتحرق!",
+        es: "¡Super Combo en Fuego!"
+      }, { rate: 1.2, pitch: 1.25 });
+    } else if (combo >= 2) {
+      this.say({
+        fr: "Combo !",
+        en: "Combo!",
+        ar: "زيّد كمل!",
+        es: "¡Combo!"
+      }, { rate: 1.1, pitch: 1.15 });
     } else {
       if (lines === 4) {
-        this.say('تطريس يا الساط! خطااار!', 'TETRIS! EXCELLENT!', { rate: 1.0, pitch: 1.3, vol: 1.0 });
+        this.say({
+          fr: "TETRIS INCROYABLE !",
+          en: "TETRIS! EXCELLENT!",
+          ar: "تطريس يا الساط! خطااار!",
+          es: "¡TETRIS INCREÍBLE!"
+        }, { rate: 1.0, pitch: 1.3, vol: 1.0 });
       } else if (lines === 3) {
-        this.say('ثلاثة واعرين!', 'TRIPLE! EXCELLENT!', { rate: 1.1, pitch: 1.2 });
+        this.say({
+          fr: "Triple Ligne !",
+          en: "TRIPLE!",
+          ar: "ثلاثة واعرين!",
+          es: "¡Triple Línea!"
+        }, { rate: 1.1, pitch: 1.2 });
       } else if (lines === 2) {
-        this.say('جووج نادين!', 'DOUBLE! NICE!', { rate: 1.05, pitch: 1.1 });
+        this.say({
+          fr: "Double Ligne !",
+          en: "DOUBLE!",
+          ar: "جووج نادين!",
+          es: "¡Doble Línea!"
+        }, { rate: 1.05, pitch: 1.1 });
       } else {
-        this.say('نادي!', 'GOOD!', { rate: 1.0, pitch: 1.0 });
+        this.say({
+          fr: "Bien joué !",
+          en: "Good!",
+          ar: "نادي!",
+          es: "¡Bien hecho!"
+        }, { rate: 1.0, pitch: 1.0 });
       }
     }
   }
@@ -1136,21 +1163,33 @@ class TetrisVoice {
   onBad(stackHeight) {
     if (!this.enabled) return;
     if (stackHeight >= 14) {
-      const phrasesAr = ['عنداك يا الساط!', 'رد البال!', 'غادي تخسر!', 'حضِي راسك!'];
-      const phrasesEn = ['Careful!', 'Oh no!', 'Bad!', 'Watch out!'];
-      const idx = Math.floor(Math.random() * phrasesEn.length);
-      this.say(phrasesAr[idx], phrasesEn[idx], { rate: 1.0, pitch: 0.85 });
+      this.say({
+        fr: "Attention à la pile !",
+        en: "Watch out!",
+        ar: "عنداك يا الساط! رد البال!",
+        es: "¡Cuidado con la torre!"
+      }, { rate: 1.0, pitch: 0.85 });
     }
   }
 
   onLevelUp(level) {
     if (!this.enabled) return;
-    this.say(`مستوى ${level}! زَيّد في السرعة!`, `Level ${level}! Speed up!`, { rate: 1.1, pitch: 1.2 });
+    this.say({
+      fr: `Niveau ${level} ! Accélération !`,
+      en: `Level ${level}! Speed up!`,
+      ar: `مستوى ${level}! زَيّد في السرعة!`,
+      es: `¡Nivel ${level}! ¡Más rápido!`
+    }, { rate: 1.1, pitch: 1.2 });
   }
 
   onGameOver() {
     if (!this.enabled) return;
-    this.say('خسرتي يا الساط! عاود لّعب!', 'Game Over!', { rate: 0.85, pitch: 0.7 });
+    this.say({
+      fr: "Fin de partie !",
+      en: "Game Over!",
+      ar: "خسرتي يا الساط! عاود لّعب!",
+      es: "¡Fin del Juego!"
+    }, { rate: 0.85, pitch: 0.7 });
   }
 
   toggle() {
