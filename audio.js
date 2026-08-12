@@ -1077,12 +1077,18 @@ class TetrisVoice {
     const voices = this.synth.getVoices();
     const prefMap = { fr: 'fr', en: 'en', ar: 'ar', es: 'es' };
     const target = prefMap[this.lang] || 'fr';
-    this.voice = voices.find(v => v.lang.startsWith(target)) || voices[0] || null;
+    const match = voices.find(v => v.lang.toLowerCase().startsWith(target));
+    this.voice = match || null;
   }
 
   say(phraseObj, { rate = 1.05, pitch = 1.0, vol = 1.0 } = {}) {
     if (!this.enabled || !this.synth) return;
-    const text = phraseObj[this.lang] || phraseObj.fr || phraseObj.en || '';
+    let text = "";
+    if (typeof phraseObj === 'string') {
+      text = phraseObj;
+    } else if (phraseObj && typeof phraseObj === 'object') {
+      text = phraseObj[this.lang] || phraseObj.fr || phraseObj.en || '';
+    }
     if (!text) return;
 
     try {
@@ -1091,8 +1097,12 @@ class TetrisVoice {
       }
       const utt = new SpeechSynthesisUtterance(text);
       const langCodes = { fr: 'fr-FR', en: 'en-US', ar: 'ar-SA', es: 'es-ES' };
-      if (this.voice) utt.voice = this.voice;
-      utt.lang   = langCodes[this.lang] || 'fr-FR';
+      const targetLang = langCodes[this.lang] || 'fr-FR';
+
+      utt.lang = targetLang;
+      if (this.voice && this.voice.lang.toLowerCase().startsWith(this.lang)) {
+        utt.voice = this.voice;
+      }
       utt.rate   = rate;
       utt.pitch  = pitch;
       utt.volume = vol;

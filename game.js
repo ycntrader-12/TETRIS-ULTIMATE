@@ -97,11 +97,22 @@ function rotateCCW(matrix) {
 function showNotification(text, cls) {
   const c = document.getElementById('notification-container');
   if (!c) return;
+
+  const ctrl = window._tetrisController;
+  const lang = (ctrl && ctrl.options && ctrl.options.lang) ? ctrl.options.lang : 'fr';
+  const dict = (typeof TRANSLATIONS !== 'undefined' && TRANSLATIONS[lang]) ? TRANSLATIONS[lang] : null;
+
+  let displayText = (dict && dict[text]) ? dict[text] : text;
+
   const el = document.createElement('div');
   el.className = `notification ${cls}`;
-  el.textContent = text;
+  el.textContent = displayText;
   c.appendChild(el);
   setTimeout(() => el.remove(), 1500);
+
+  if (ctrl && ctrl.voice && ctrl.voice.enabled) {
+    ctrl.voice.say(displayText);
+  }
 }
 
 // ══════════════════════════════════════════
@@ -444,11 +455,11 @@ class TetrisGame {
       for (let r = startR; r < BOARD_H; r++) {
         for (let c = 3; c < 7; c++) this.board[r][c] = 0;
       }
-      showNotification('💣 BOMBE EXPLOSÉE !', 'notif-single');
+      showNotification('notif_bomb', 'notif-single');
     } else if (type === 'freeze') {
       this.isFreezeActive = true;
       setTimeout(() => { this.isFreezeActive = false; }, 10000);
-      showNotification('🧊 TEMPS RALENTI (10s) !', 'notif-double');
+      showNotification('notif_freeze', 'notif-double');
     } else if (type === 'clearline') {
       for (let r = BOARD_H - 1; r >= 0; r--) {
         if (this.board[r].some(c => c !== 0)) {
@@ -457,10 +468,10 @@ class TetrisGame {
           break;
         }
       }
-      showNotification('⚡ LIGNE SUPPRIMÉE !', 'notif-single');
+      showNotification('notif_clearline', 'notif-single');
     } else if (type === 'shield') {
       this.isShieldActive = true;
-      showNotification('🛡️ BOUCLIER ACTIVÉ !', 'notif-level');
+      showNotification('notif_shield', 'notif-level');
     }
 
     if (window._tetrisController) {
@@ -975,7 +986,25 @@ const TRANSLATIONS = {
     opt_save: "✔ SAUVEGARDER & APPLIQUER",
     ach_title: "🎖️ ACCOMPLISSEMENTS & SUCCÈS",
     stats_title: "📊 STATISTIQUES DU JOUEUR",
-    scores_title: "🏆 TOP MEILLEURS SCORES"
+    scores_title: "🏆 TOP MEILLEURS SCORES",
+    notif_bomb: "💣 BOMBE EXPLOSÉE !",
+    notif_freeze: "🧊 TEMPS RALENTI (10s) !",
+    notif_clearline: "⚡ LIGNE SUPPRIMÉE !",
+    notif_shield: "🛡️ BOUCLIER ACTIVÉ !",
+    notif_shield_used: "🛡️ BOUCLIER UTILISÉ ! PLANCHE NETTOYÉE !",
+    notif_options_saved: "OPTIONS SAUVEGARDÉES !",
+    notif_score_saved: "SCORE ENREGISTRÉ !",
+    notif_single: "NADI !",
+    notif_double: "JOOJ NADIN !",
+    notif_triple: "TLATA WA3RIN !",
+    notif_tetris: "TETRIS A SAT !",
+    notif_tspin: "🎯 T-SPIN !",
+    notif_b2b: "⚡ BACK-TO-BACK !",
+    mode_classic_desc: "Mode Classic : Progression standard et montée de niveau toutes les 10 lignes.",
+    mode_timeattack_desc: "Mode Time Attack : 2 minutes pour cumuler un maximum de points !",
+    mode_endless_desc: "Mode Endless : Difficulté infinie progressive sans limite de niveau.",
+    mode_survival_desc: "Mode Survival : Vitesse extrême qui accélère continuellement.",
+    mode_challenge_desc: "Mode Challenge : Réaliser des T-Spins, combos et 30,000 points."
   },
   en: {
     skip_intro: "SKIP INTRO ⏭",
@@ -1032,7 +1061,25 @@ const TRANSLATIONS = {
     opt_save: "✔ SAVE & APPLY",
     ach_title: "🎖️ ACHIEVEMENTS",
     stats_title: "📊 PLAYER STATISTICS",
-    scores_title: "🏆 TOP HIGH SCORES"
+    scores_title: "🏆 TOP HIGH SCORES",
+    notif_bomb: "💣 BOMB EXPLODED!",
+    notif_freeze: "🧊 TIME SLOWED (10s)!",
+    notif_clearline: "⚡ LINE CLEARED!",
+    notif_shield: "🛡️ SHIELD ACTIVATED!",
+    notif_shield_used: "🛡️ SHIELD USED! BOARD CLEARED!",
+    notif_options_saved: "SETTINGS SAVED!",
+    notif_score_saved: "SCORE SAVED!",
+    notif_single: "GOOD CLEAR!",
+    notif_double: "DOUBLE CLEAR!",
+    notif_triple: "TRIPLE CLEAR!",
+    notif_tetris: "EXCELLENT TETRIS!",
+    notif_tspin: "🎯 T-SPIN!",
+    notif_b2b: "⚡ BACK-TO-BACK!",
+    mode_classic_desc: "Classic Mode: Standard progression and level up every 10 lines.",
+    mode_timeattack_desc: "Time Attack Mode: 2 minutes to score maximum points!",
+    mode_endless_desc: "Endless Mode: Infinite progressive difficulty with no level cap.",
+    mode_survival_desc: "Survival Mode: Continuous extreme speed acceleration.",
+    mode_challenge_desc: "Challenge Mode: Complete T-Spins, combos and 30,000 score."
   },
   ar: {
     skip_intro: "تخطي المقدمة ⏭",
@@ -1089,7 +1136,25 @@ const TRANSLATIONS = {
     opt_save: "✔ حفظ وتطبيق",
     ach_title: "🎖️ الإنجازات",
     stats_title: "📊 إحصائيات اللاعب",
-    scores_title: "🏆 أفضل النقاط"
+    scores_title: "🏆 أفضل النقاط",
+    notif_bomb: "💣 انفجار القنبلة!",
+    notif_freeze: "🧊 تبطيء الوقت (10ث)!",
+    notif_clearline: "⚡ تم مسح الصف!",
+    notif_shield: "🛡️ تفعيل الدرع!",
+    notif_shield_used: "🛡️ تم استخدام الدرع وتنظيف اللوحة!",
+    notif_options_saved: "تم حفظ الإعدادات!",
+    notif_score_saved: "تم حفظ النتيجة!",
+    notif_single: "مسح ممتاز!",
+    notif_double: "صفين ممتازين!",
+    notif_triple: "ثلاثة صفوف خطيرة!",
+    notif_tetris: "تتريس خارق!",
+    notif_tspin: "🎯 تي سبيين!",
+    notif_b2b: "⚡ باك تو باك!",
+    mode_classic_desc: "نمط الكلاسيك: تقدم قياسي وزيادة المستوى كل 10 صفوف.",
+    mode_timeattack_desc: "نمط التحدي الزمني: دقيقتان لتحقيق أعلى نتيجة ممكنة!",
+    mode_endless_desc: "نمط اللانهاية: صعوبة تصاعدية مستمرة بدون نهاية.",
+    mode_survival_desc: "نمط البقاء: سرعة هائلة تتزايد باستمرار.",
+    mode_challenge_desc: "نمط التحديات: تحقيق T-Spins وكومبو و 30,000 نقطة."
   },
   es: {
     skip_intro: "SALTAR INTRO ⏭",
@@ -1146,7 +1211,25 @@ const TRANSLATIONS = {
     opt_save: "✔ GUARDAR Y APLICAR",
     ach_title: "🎖️ LOGROS",
     stats_title: "📊 ESTADÍSTICAS",
-    scores_title: "🏆 TOP MEJORES SCORES"
+    scores_title: "🏆 TOP MEJORES SCORES",
+    notif_bomb: "💣 ¡BOMBA EXPLOTADA!",
+    notif_freeze: "🧊 ¡TIEMPO RALENTIZADO (10s)!",
+    notif_clearline: "⚡ ¡LÍNEA BORRADA!",
+    notif_shield: "🛡️ ¡ESCUDO ACTIVADO!",
+    notif_shield_used: "🛡️ ¡ESCUDO USADO! ¡TABLERO LIMPIADO!",
+    notif_options_saved: "¡OPCIONES GUARDADAS!",
+    notif_score_saved: "¡PUNTUACIÓN GUARDADA!",
+    notif_single: "¡BUENA LÍNEA!",
+    notif_double: "¡DOBLE LÍNEA!",
+    notif_triple: "¡TRIPLE LÍNEA!",
+    notif_tetris: "¡TETRIS EXCELENTE!",
+    notif_tspin: "🎯 ¡T-SPIN!",
+    notif_b2b: "⚡ ¡BACK-TO-BACK!",
+    mode_classic_desc: "Modo Clásico: Progresión estándar y subida de nivel cada 10 líneas.",
+    mode_timeattack_desc: "Modo Contrarreloj: ¡2 minutos para conseguir la máxima puntuación!",
+    mode_endless_desc: "Modo Infinito: Dificultad progresiva sin límite de nivel.",
+    mode_survival_desc: "Modo Supervivencia: Aceleración de velocidad extrema continua.",
+    mode_challenge_desc: "Modo Desafío: Realizar T-Spins, combos y 30,000 puntos."
   }
 };
 
@@ -1335,14 +1418,10 @@ class TetrisController {
         btn.classList.add('active');
         this.selectedMode = btn.dataset.mode;
         const descEl = document.getElementById('mode-description-text');
-        const descs = {
-          classic: 'Mode Classic : Progression standard et montée de niveau toutes les 10 lignes.',
-          timeattack: 'Mode Time Attack : 2 minutes pour cumuler un maximum de points !',
-          endless: 'Mode Endless : Difficulté infinie progressive sans limite de niveau.',
-          survival: 'Mode Survival : Vitesse extrême qui accélère continuellement.',
-          challenge: 'Mode Challenge : Réaliser des T-Spins, combos et 30,000 points.'
-        };
-        if (descEl) descEl.textContent = descs[this.selectedMode] || '';
+        const lang = (this.options && this.options.lang) ? this.options.lang : 'fr';
+        const dict = TRANSLATIONS[lang] || TRANSLATIONS.fr;
+        const key = `mode_${this.selectedMode}_desc`;
+        if (descEl) descEl.textContent = dict[key] || '';
       });
     });
 
@@ -1708,21 +1787,22 @@ class TetrisController {
 
     if (isTSpin) {
       this.audio.playTSpin();
-      showNotification('🎯 T-SPIN !', 'notif-tspin');
+      showNotification('notif_tspin', 'notif-tspin');
       this.voice.onTSpin(result ? result.tSpinType : null);
     }
 
     if (isB2B) {
       this.audio.playBackToBack();
-      setTimeout(() => showNotification('⚡ BACK-TO-BACK !', 'notif-b2b'), 300);
+      setTimeout(() => showNotification('notif_b2b', 'notif-b2b'), 300);
       this.voice.onBackToBack();
     }
 
     if (linesCleared > 0) {
       if (this.options.shake) this._triggerScreenShake();
-      const notifMap = ['', 'NADI !', 'JOOJ NADIN !', 'TLATA WA3RIN !', 'TETRIS A SAT !'];
+      const notifKeys = ['', 'notif_single', 'notif_double', 'notif_triple', 'notif_tetris'];
       const clsMap = ['', 'notif-single', 'notif-double', 'notif-triple', 'notif-tetris'];
-      showNotification(notifMap[Math.min(linesCleared, 4)] || 'TETRIS !', clsMap[Math.min(linesCleared, 4)]);
+      const key = notifKeys[Math.min(linesCleared, 4)] || 'notif_tetris';
+      showNotification(key, clsMap[Math.min(linesCleared, 4)]);
 
       if (combo >= 2) {
         setTimeout(() => showNotification(`COMBO x${combo} !`, 'notif-double'), 350);
