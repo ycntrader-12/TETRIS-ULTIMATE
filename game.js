@@ -914,6 +914,241 @@ class IntroCinematic {
 }
 
 // ══════════════════════════════════════════
+//  DICTIONNAIRE TRADUCTION MULTILINGUE (i18n)
+// ══════════════════════════════════════════
+
+const TRANSLATIONS = {
+  fr: {
+    skip_intro: "PASSER L'INTRO ⏭",
+    start_btn: "▶ JOUER",
+    scores_btn: "🏆 SCORES",
+    achievements_btn: "🎖️ SUCCÈS",
+    stats_btn: "📊 STATS",
+    options_btn: "⚙️ OPTIONS",
+    replay_intro: "🎬 INTRO",
+    created_by: "CRÉÉ PAR",
+    game_mode: "MODE DE JEU :",
+    initial_level: "Niveau initial :",
+    gameover_title: "GAME OVER",
+    final_score: "SCORE",
+    final_level: "NIVEAU",
+    final_lines: "LIGNES",
+    enter_initials: "ENTRER VOS INITIALES (3 LETTRES)",
+    save_btn: "ENREGISTRER",
+    restart_btn: "↺ REJOUER",
+    menu_btn: "⌂ MENU",
+    back_btn: "← RETOUR",
+    pause_title: "PAUSE",
+    resume_btn: "▶ REPRENDRE",
+    score_label: "SCORE",
+    best_label: "MEILLEUR",
+    lines_label: "LIGNES",
+    level_label: "NIVEAU",
+    hold_label: "RÉSERVE (HOLD / C)",
+    next_label: "SUIVANTS",
+    timer_label: "TEMPS RESTANT",
+    audio_label: "🎵 AUDIO & MUSIQUE",
+    track_label: "PISTE ACTUELLE",
+    next_track_btn: "⏭ CHANGER DE PISTE",
+    volume_label: "VOLUME",
+    music_label: "Musique",
+    voice_label: "Voix",
+    speed_label: "VITESSE",
+    quit_btn: "⏹ QUITTER",
+    opt_title: "⚙️ OPTIONS AVANCÉES",
+    opt_music_title: "🎵 Musique & Rotation Auto (30s)",
+    opt_automusic: "Changement Auto de Musique :",
+    opt_interval: "Intervalle de Rotation :",
+    opt_lang_title: "🌐 Langue / Language",
+    opt_lang_label: "Langue de l'interface :",
+    opt_fx_title: "🎮 Visuel & Effets de Jeu",
+    opt_ghost: "Fantôme de Pièce (Ghost Piece) :",
+    opt_grid: "Grille du Plateau :",
+    opt_shake: "Secousse d'écran (Screen Shake) :",
+    opt_particles: "Effets de Particules :",
+    opt_high: "Élevé",
+    opt_low: "Faible",
+    opt_theme_title: "🎨 Thème Visuel",
+    opt_theme_label: "Style de Thème :",
+    opt_save: "✔ SAUVEGARDER & APPLIQUER",
+    ach_title: "🎖️ ACCOMPLISSEMENTS & SUCCÈS",
+    stats_title: "📊 STATISTIQUES DU JOUEUR",
+    scores_title: "🏆 TOP MEILLEURS SCORES"
+  },
+  en: {
+    skip_intro: "SKIP INTRO ⏭",
+    start_btn: "▶ PLAY",
+    scores_btn: "🏆 SCORES",
+    achievements_btn: "🎖️ ACHIEVEMENTS",
+    stats_btn: "📊 STATS",
+    options_btn: "⚙️ SETTINGS",
+    replay_intro: "🎬 INTRO",
+    created_by: "CREATED BY",
+    game_mode: "GAME MODE:",
+    initial_level: "Starting Level:",
+    gameover_title: "GAME OVER",
+    final_score: "SCORE",
+    final_level: "LEVEL",
+    final_lines: "LINES",
+    enter_initials: "ENTER INITIALS (3 LETTERS)",
+    save_btn: "SAVE",
+    restart_btn: "↺ REPLAY",
+    menu_btn: "⌂ MENU",
+    back_btn: "← BACK",
+    pause_title: "PAUSE",
+    resume_btn: "▶ RESUME",
+    score_label: "SCORE",
+    best_label: "BEST",
+    lines_label: "LINES",
+    level_label: "LEVEL",
+    hold_label: "HOLD (C)",
+    next_label: "NEXT",
+    timer_label: "TIME LEFT",
+    audio_label: "🎵 AUDIO & MUSIC",
+    track_label: "CURRENT TRACK",
+    next_track_btn: "⏭ NEXT TRACK",
+    volume_label: "VOLUME",
+    music_label: "Music",
+    voice_label: "Voice",
+    speed_label: "SPEED",
+    quit_btn: "⏹ QUIT",
+    opt_title: "⚙️ ADVANCED SETTINGS",
+    opt_music_title: "🎵 Music & Auto-Switch (30s)",
+    opt_automusic: "Auto Music Switch:",
+    opt_interval: "Switch Interval:",
+    opt_lang_title: "🌐 Language",
+    opt_lang_label: "Interface Language:",
+    opt_fx_title: "🎮 Visual & Game FX",
+    opt_ghost: "Ghost Piece:",
+    opt_grid: "Board Grid:",
+    opt_shake: "Screen Shake:",
+    opt_particles: "Particle FX:",
+    opt_high: "High",
+    opt_low: "Low",
+    opt_theme_title: "🎨 Visual Theme",
+    opt_theme_label: "Theme Style:",
+    opt_save: "✔ SAVE & APPLY",
+    ach_title: "🎖️ ACHIEVEMENTS",
+    stats_title: "📊 PLAYER STATISTICS",
+    scores_title: "🏆 TOP HIGH SCORES"
+  },
+  ar: {
+    skip_intro: "تخطي المقدمة ⏭",
+    start_btn: "▶ ابدأ اللعب",
+    scores_btn: "🏆 النقاط",
+    achievements_btn: "🎖️ الإنجازات",
+    stats_btn: "📊 الإحصائيات",
+    options_btn: "⚙️ الإعدادات",
+    replay_intro: "🎬 المقدمة",
+    created_by: "تطوير",
+    game_mode: "نمط اللعبة:",
+    initial_level: "المستوى الأولي:",
+    gameover_title: "انتهت اللعبة",
+    final_score: "النتيجة",
+    final_level: "المستوى",
+    final_lines: "الصفوف",
+    enter_initials: "أدخل أحرفك (3 أحرف)",
+    save_btn: "حفظ",
+    restart_btn: "↺ إعادة اللعب",
+    menu_btn: "⌂ القائمة",
+    back_btn: "← العودة",
+    pause_title: "إيقاف مؤقت",
+    resume_btn: "▶ استئناف",
+    score_label: "النتيجة",
+    best_label: "الأفضل",
+    lines_label: "الصفوف",
+    level_label: "المستوى",
+    hold_label: "احتفاظ (C)",
+    next_label: "التالي",
+    timer_label: "الوقت المتبقي",
+    audio_label: "🎵 الصوت والموسيقى",
+    track_label: "المقطوعة الحالية",
+    next_track_btn: "⏭ المقطوعة التالية",
+    volume_label: "مستوى الصوت",
+    music_label: "الموسيقى",
+    voice_label: "الصوت",
+    speed_label: "السرعة",
+    quit_btn: "⏹ خروج",
+    opt_title: "⚙️ خيارات متقدمة",
+    opt_music_title: "🎵 الموسيقى والتبديل التلقائي (30ث)",
+    opt_automusic: "تبديل الموسيقى تلقائياً:",
+    opt_interval: "معدل التبديل:",
+    opt_lang_title: "🌐 اللغة / Language",
+    opt_lang_label: "لغة الواجهة:",
+    opt_fx_title: "🎮 المؤثرات البصرية",
+    opt_ghost: "القطعة الظلية:",
+    opt_grid: "شبكة اللوحة:",
+    opt_shake: "اهتزاز الشاشة:",
+    opt_particles: "مؤثرات الجسيمات:",
+    opt_high: "عالي",
+    opt_low: "منخفض",
+    opt_theme_title: "🎨 المظهر البصري",
+    opt_theme_label: "نمط المظهر:",
+    opt_save: "✔ حفظ وتطبيق",
+    ach_title: "🎖️ الإنجازات",
+    stats_title: "📊 إحصائيات اللاعب",
+    scores_title: "🏆 أفضل النقاط"
+  },
+  es: {
+    skip_intro: "SALTAR INTRO ⏭",
+    start_btn: "▶ JUGAR",
+    scores_btn: "🏆 SCORES",
+    achievements_btn: "🎖️ LOGROS",
+    stats_btn: "📊 ESTADÍSTICAS",
+    options_btn: "⚙️ OPCIONES",
+    replay_intro: "🎬 INTRO",
+    created_by: "CREADO POR",
+    game_mode: "MODO DE JUEGO:",
+    initial_level: "Nivel Inicial:",
+    gameover_title: "GAME OVER",
+    final_score: "PUNTUACIÓN",
+    final_level: "NIVEL",
+    final_lines: "LÍNEAS",
+    enter_initials: "INICIALES (3 LETRAS)",
+    save_btn: "GUARDAR",
+    restart_btn: "↺ REJUGAR",
+    menu_btn: "⌂ MENÚ",
+    back_btn: "← VOLVER",
+    pause_title: "PAUSA",
+    resume_btn: "▶ REANUDAR",
+    score_label: "PUNTUACIÓN",
+    best_label: "MEJOR",
+    lines_label: "LÍNEAS",
+    level_label: "NIVEL",
+    hold_label: "RESERVA (C)",
+    next_label: "SIGUIENTES",
+    timer_label: "TIEMPO RESTANTE",
+    audio_label: "🎵 AUDIO Y MÚSICA",
+    track_label: "PISTA ACTUAL",
+    next_track_btn: "⏭ CAMBIAR PISTA",
+    volume_label: "VOLUMEN",
+    music_label: "Música",
+    voice_label: "Voz",
+    speed_label: "VELOCIDAD",
+    quit_btn: "⏹ SALIR",
+    opt_title: "⚙️ OPCIONES AVANZADAS",
+    opt_music_title: "🎵 Música y Auto-Cambio (30s)",
+    opt_automusic: "Cambio Auto de Música:",
+    opt_interval: "Intervalo de Cambio:",
+    opt_lang_title: "🌐 Idioma / Language",
+    opt_lang_label: "Idioma de la Interfaz:",
+    opt_fx_title: "🎮 Efectos Visuales",
+    opt_ghost: "Pieza Fantasma:",
+    opt_grid: "Rejilla del Tablero:",
+    opt_shake: "Vibración de Pantalla:",
+    opt_particles: "Efectos de Partículas:",
+    opt_high: "Alto",
+    opt_low: "Bajo",
+    opt_theme_title: "🎨 Tema Visual",
+    opt_theme_label: "Estilo de Tema:",
+    opt_save: "✔ GUARDAR Y APLICAR",
+    ach_title: "🎖️ LOGROS",
+    stats_title: "📊 ESTADÍSTICAS",
+    scores_title: "🏆 TOP MEJORES SCORES"
+  }
+};
+
+// ══════════════════════════════════════════
 //  MINI CANVAS (NEXT & HOLD)
 // ══════════════════════════════════════════
 
@@ -974,7 +1209,8 @@ class TetrisController {
       grid: true,
       shake: true,
       particles: 'high',
-      theme: 'cyberpunk'
+      theme: 'cyberpunk',
+      lang: 'fr'
     }));
 
     // UI elements
@@ -1031,7 +1267,30 @@ class TetrisController {
   applyOptions() {
     if (this.renderer) this.renderer.setOptions(this.options);
     document.body.className = `theme-${this.options.theme}`;
+    if (this.options.lang === 'ar') {
+      document.body.classList.add('rtl-mode');
+    } else {
+      document.body.classList.remove('rtl-mode');
+    }
     this.audio.setAutoMusicInterval(this.options.autoMusic ? this.options.autoMusicInterval : 0);
+    this.updateLanguageUI();
+  }
+
+  updateLanguageUI() {
+    const lang = this.options.lang || 'fr';
+    const dict = TRANSLATIONS[lang] || TRANSLATIONS.fr;
+
+    // Set active value in select
+    const langSelect = document.getElementById('opt-lang');
+    if (langSelect) langSelect.value = lang;
+
+    // Translate all elements with data-i18n
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      if (dict[key]) {
+        el.textContent = dict[key];
+      }
+    });
   }
 
   _buildSpeedDots() {
@@ -1180,6 +1439,7 @@ class TetrisController {
         this.options.shake = document.getElementById('opt-shake').checked;
         this.options.particles = document.getElementById('opt-particles').value;
         this.options.theme = document.getElementById('opt-theme').value;
+        this.options.lang = document.getElementById('opt-lang').value;
 
         localStorage.setItem('tetris3d_options', JSON.stringify(this.options));
         this.applyOptions();

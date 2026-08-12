@@ -16,7 +16,7 @@
   <div id="intro-screen" class="overlay">
     <canvas id="intro-canvas"></canvas>
     <div class="intro-controls">
-      <button id="skip-intro-btn" class="skip-btn">PASSER L'INTRO ⏭</button>
+      <button id="skip-intro-btn" class="skip-btn" data-i18n="skip_intro">PASSER L'INTRO ⏭</button>
     </div>
     <div id="intro-title-group" class="intro-title-group hidden">
       <div class="title-3d-scene">
@@ -50,7 +50,7 @@
 
         <!-- SÉLECTEUR DE MODE DE JEU -->
         <div class="mode-selector-group">
-          <div class="panel-label">MODE DE JEU :</div>
+          <div class="panel-label" data-i18n="game_mode">MODE DE JEU :</div>
           <div class="mode-buttons-row">
             <button class="mode-btn active" data-mode="classic" title="Progression classique par niveaux">CLASSIC</button>
             <button class="mode-btn" data-mode="timeattack" title="2 minutes pour maximiser le score">TIME ATTACK</button>
@@ -61,10 +61,10 @@
           <div id="mode-description-text" class="mode-desc">Mode Classic : Progression standard et montée de niveau toutes les 10 lignes.</div>
         </div>
 
-        <button id="start-btn" class="btn-primary pulse-btn">▶ JOUER</button>
+        <button id="start-btn" class="btn-primary pulse-btn" data-i18n="start_btn">▶ JOUER</button>
 
         <div class="difficulty-selector">
-          <span>Niveau initial :</span>
+          <span data-i18n="initial_level">Niveau initial :</span>
           <button class="diff-btn active" data-level="1">1</button>
           <button class="diff-btn" data-level="5">5</button>
           <button class="diff-btn" data-level="10">10</button>
@@ -72,28 +72,28 @@
         </div>
 
         <div class="start-menu-actions">
-          <button id="show-start-scores-btn" class="btn-secondary">🏆 SCORES</button>
-          <button id="show-achievements-btn" class="btn-secondary">🎖️ SUCCÈS</button>
-          <button id="show-stats-btn" class="btn-secondary">📊 STATS</button>
-          <button id="show-options-btn" class="btn-secondary">⚙️ OPTIONS</button>
+          <button id="show-start-scores-btn" class="btn-secondary" data-i18n="scores_btn">🏆 SCORES</button>
+          <button id="show-achievements-btn" class="btn-secondary" data-i18n="achievements_btn">🎖️ SUCCÈS</button>
+          <button id="show-stats-btn" class="btn-secondary" data-i18n="stats_btn">📊 STATS</button>
+          <button id="show-options-btn" class="btn-secondary" data-i18n="options_btn">⚙️ OPTIONS</button>
         </div>
 
         <div class="start-secondary-actions">
-          <button id="replay-intro-btn" class="btn-secondary btn-sm">🎬 INTRO</button>
+          <button id="replay-intro-btn" class="btn-secondary btn-sm" data-i18n="replay_intro">🎬 INTRO</button>
         </div>
 
         <!-- SIGNATURE -->
         <div class="creator-signature">
-          <span class="sig-label">CRÉÉ PAR</span>
+          <span class="sig-label" data-i18n="created_by">CRÉÉ PAR</span>
           <span class="sig-name">ycntrader-12</span>
         </div>
       </div>
 
       <!-- VUE CLASSEMENT DES SCORES (MENU) -->
       <div id="start-scores-view" class="menu-view hidden">
-        <div class="panel-label title-label">🏆 TOP MEILLEURS SCORES</div>
+        <div class="panel-label title-label" data-i18n="scores_title">🏆 TOP MEILLEURS SCORES</div>
         <div id="start-leaderboard-list" class="leaderboard-list"></div>
-        <button id="back-to-start-btn" class="btn-secondary mt-10">← RETOUR AU MENU</button>
+        <button id="back-to-start-btn" class="btn-secondary mt-10" data-i18n="back_btn">← RETOUR AU MENU</button>
       </div>
 
     </div>
@@ -105,44 +105,44 @@
 
       <!-- VUE PRINCIPALE GAME OVER -->
       <div id="gameover-main-view" class="menu-view">
-        <h2 class="gameover-title">GAME OVER</h2>
+        <h2 class="gameover-title" data-i18n="gameover_title">GAME OVER</h2>
 
         <div class="final-stats">
           <div class="stat-item">
-            <span class="stat-label">SCORE</span>
+            <span class="stat-label" data-i18n="final_score">SCORE</span>
             <span class="stat-value" id="final-score">0</span>
           </div>
           <div class="stat-item">
-            <span class="stat-label">NIVEAU</span>
+            <span class="stat-label" data-i18n="final_level">NIVEAU</span>
             <span class="stat-value" id="final-level">1</span>
           </div>
           <div class="stat-item">
-            <span class="stat-label">LIGNES</span>
+            <span class="stat-label" data-i18n="final_lines">LIGNES</span>
             <span class="stat-value" id="final-lines">0</span>
           </div>
         </div>
 
         <!-- FORMULAIRE SURNOM (3 LETTRES) -->
         <div class="initials-box" id="initials-box">
-          <div class="panel-label">ENTRER VOS INITIALES (3 LETTRES)</div>
+          <div class="panel-label" data-i18n="enter_initials">ENTRER VOS INITIALES (3 LETTRES)</div>
           <div class="initials-input-group">
             <input type="text" id="initials-input" maxlength="3" placeholder="YCN" autocomplete="off" spellcheck="false" />
-            <button id="save-score-btn" class="btn-primary btn-sm">ENREGISTRER</button>
+            <button id="save-score-btn" class="btn-primary btn-sm" data-i18n="save_btn">ENREGISTRER</button>
           </div>
         </div>
 
         <div class="overlay-actions">
-          <button id="restart-btn" class="btn-primary">↺ REJOUER</button>
-          <button id="show-gameover-scores-btn" class="btn-secondary">🏆 SCORES</button>
-          <button id="menu-btn" class="btn-secondary">⌂ MENU</button>
+          <button id="restart-btn" class="btn-primary" data-i18n="restart_btn">↺ REJOUER</button>
+          <button id="show-gameover-scores-btn" class="btn-secondary" data-i18n="scores_btn">🏆 SCORES</button>
+          <button id="menu-btn" class="btn-secondary" data-i18n="menu_btn">⌂ MENU</button>
         </div>
       </div>
 
       <!-- VUE CLASSEMENT DES SCORES (GAME OVER) -->
       <div id="gameover-scores-view" class="menu-view hidden">
-        <div class="panel-label title-label">📜 JOURNAL DES SCORES</div>
+        <div class="panel-label title-label" data-i18n="scores_title">📜 JOURNAL DES SCORES</div>
         <div id="gameover-leaderboard-list" class="leaderboard-list"></div>
-        <button id="back-to-gameover-btn" class="btn-secondary mt-10">← RETOUR</button>
+        <button id="back-to-gameover-btn" class="btn-secondary mt-10" data-i18n="back_btn">← RETOUR</button>
       </div>
 
     </div>
@@ -152,57 +152,71 @@
   <div id="advanced-options-modal" class="overlay hidden">
     <div class="overlay-content modal-large">
       <div class="modal-header">
-        <h2>⚙️ OPTIONS AVANCÉES</h2>
+        <h2 data-i18n="opt_title">⚙️ OPTIONS AVANCÉES</h2>
         <button class="close-modal-btn" id="close-options-btn">✕</button>
       </div>
 
       <div class="options-sections-container">
         <!-- AUDION & MUSIQUE 30S -->
         <div class="options-group">
-          <h3>🎵 Musique & Rotation Auto (30s)</h3>
+          <h3 data-i18n="opt_music_title">🎵 Musique & Rotation Auto (30s)</h3>
           <div class="opt-row">
-            <label for="opt-automusic">Changement Auto de Musique :</label>
+            <label for="opt-automusic" data-i18n="opt_automusic">Changement Auto de Musique :</label>
             <input type="checkbox" id="opt-automusic" class="toggle-checkbox" checked />
           </div>
           <div class="opt-row">
-            <label for="opt-music-interval">Intervalle de Rotation :</label>
+            <label for="opt-music-interval" data-i18n="opt_interval">Intervalle de Rotation :</label>
             <select id="opt-music-interval" class="opt-select">
-              <option value="15">15 secondes</option>
-              <option value="30" selected>30 secondes (Recommandé)</option>
-              <option value="60">60 secondes</option>
+              <option value="15">15s</option>
+              <option value="30" selected>30s</option>
+              <option value="60">60s</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- LANGUE / LANGUAGE -->
+        <div class="options-group">
+          <h3 data-i18n="opt_lang_title">🌐 Langue / Language</h3>
+          <div class="opt-row">
+            <label for="opt-lang" data-i18n="opt_lang_label">Langue de l'interface :</label>
+            <select id="opt-lang" class="opt-select">
+              <option value="fr" selected>🇫🇷 Français</option>
+              <option value="en">🇬🇧 English</option>
+              <option value="ar">🇲🇦 العربية / Darija</option>
+              <option value="es">🇪🇸 Español</option>
             </select>
           </div>
         </div>
 
         <!-- GAMEPLAY & EFFETS -->
         <div class="options-group">
-          <h3>🎮 Visuel & Effets de Jeu</h3>
+          <h3 data-i18n="opt_fx_title">🎮 Visuel & Effets de Jeu</h3>
           <div class="opt-row">
-            <label for="opt-ghost">Fantôme de Pièce (Ghost Piece) :</label>
+            <label for="opt-ghost" data-i18n="opt_ghost">Fantôme de Pièce (Ghost Piece) :</label>
             <input type="checkbox" id="opt-ghost" class="toggle-checkbox" checked />
           </div>
           <div class="opt-row">
-            <label for="opt-grid">Grille du Plateau :</label>
+            <label for="opt-grid" data-i18n="opt_grid">Grille du Plateau :</label>
             <input type="checkbox" id="opt-grid" class="toggle-checkbox" checked />
           </div>
           <div class="opt-row">
-            <label for="opt-shake">Secousse d'écran (Screen Shake) :</label>
+            <label for="opt-shake" data-i18n="opt_shake">Secousse d'écran (Screen Shake) :</label>
             <input type="checkbox" id="opt-shake" class="toggle-checkbox" checked />
           </div>
           <div class="opt-row">
-            <label for="opt-particles">Effets de Particules :</label>
+            <label for="opt-particles" data-i18n="opt_particles">Effets de Particules :</label>
             <select id="opt-particles" class="opt-select">
-              <option value="high" selected>Élevé (Plein d'étincelles)</option>
-              <option value="low">Faible (Économie)</option>
+              <option value="high" selected data-i18n="opt_high">Élevé</option>
+              <option value="low" data-i18n="opt_low">Faible</option>
             </select>
           </div>
         </div>
 
         <!-- THÈMES DE COULEURS -->
         <div class="options-group">
-          <h3>🎨 Thème Visuel</h3>
+          <h3 data-i18n="opt_theme_title">🎨 Thème Visuel</h3>
           <div class="opt-row">
-            <label for="opt-theme">Style de Thème :</label>
+            <label for="opt-theme" data-i18n="opt_theme_label">Style de Thème :</label>
             <select id="opt-theme" class="opt-select">
               <option value="cyberpunk" selected>Cyberpunk Neon</option>
               <option value="arcade">Arcade 8-Bit</option>
@@ -214,7 +228,7 @@
         </div>
       </div>
 
-      <button id="save-options-btn" class="btn-primary full-width mt-10">✔ SAUVEGARDER & APPLIQUER</button>
+      <button id="save-options-btn" class="btn-primary full-width mt-10" data-i18n="opt_save">✔ SAUVEGARDER & APPLIQUER</button>
     </div>
   </div>
 
@@ -222,7 +236,7 @@
   <div id="achievements-modal" class="overlay hidden">
     <div class="overlay-content modal-large">
       <div class="modal-header">
-        <h2>🎖️ ACCOMPLISSEMENTS & SUCCÈS</h2>
+        <h2 data-i18n="ach_title">🎖️ ACCOMPLISSEMENTS & SUCCÈS</h2>
         <button class="close-modal-btn" id="close-achievements-btn">✕</button>
       </div>
       <div id="achievements-list-container" class="achievements-grid"></div>
@@ -233,7 +247,7 @@
   <div id="stats-modal" class="overlay hidden">
     <div class="overlay-content modal-large">
       <div class="modal-header">
-        <h2>📊 STATISTIQUES DU JOUEUR</h2>
+        <h2 data-i18n="stats_title">📊 STATISTIQUES DU JOUEUR</h2>
         <button class="close-modal-btn" id="close-stats-btn">✕</button>
       </div>
       <div id="stats-content-container" class="stats-grid"></div>
@@ -247,24 +261,24 @@
     <div class="side-panel left-panel">
       <!-- HOLD PIECE -->
       <div class="panel-card hold-card">
-        <div class="panel-label">RÉSERVE (HOLD / C)</div>
+        <div class="panel-label" data-i18n="hold_label">RÉSERVE (HOLD / C)</div>
         <canvas id="hold-canvas" width="100" height="100"></canvas>
       </div>
 
       <div class="panel-card">
-        <div class="panel-label">SCORE</div>
+        <div class="panel-label" data-i18n="score_label">SCORE</div>
         <div class="panel-value" id="score-display">0</div>
       </div>
       <div class="panel-card">
-        <div class="panel-label">MEILLEUR</div>
+        <div class="panel-label" data-i18n="best_label">MEILLEUR</div>
         <div class="panel-value" id="best-display">0</div>
       </div>
       <div class="panel-card">
-        <div class="panel-label">LIGNES</div>
+        <div class="panel-label" data-i18n="lines_label">LIGNES</div>
         <div class="panel-value" id="lines-display">0</div>
       </div>
       <div class="panel-card level-card">
-        <div class="panel-label">NIVEAU</div>
+        <div class="panel-label" data-i18n="level_label">NIVEAU</div>
         <div class="panel-value level-value" id="level-display">1</div>
         <div class="level-bar-bg">
           <div class="level-bar-fill" id="level-bar"></div>
@@ -273,7 +287,7 @@
 
       <!-- TIMER DU MODE DE JEU -->
       <div class="panel-card mode-timer-card hidden" id="mode-timer-card">
-        <div class="panel-label">TEMPS RESTANT</div>
+        <div class="panel-label" data-i18n="timer_label">TEMPS RESTANT</div>
         <div class="panel-value timer-value" id="mode-timer-display">02:00</div>
       </div>
     </div>
@@ -292,9 +306,9 @@
 
       <div id="pause-overlay" class="hidden">
         <div class="pause-content">
-          <h2>PAUSE</h2>
-          <button id="resume-btn" class="btn-primary">▶ REPRENDRE</button>
-          <button id="in-game-options-btn" class="btn-secondary mt-10">⚙️ OPTIONS</button>
+          <h2 data-i18n="pause_title">PAUSE</h2>
+          <button id="resume-btn" class="btn-primary" data-i18n="resume_btn">▶ REPRENDRE</button>
+          <button id="in-game-options-btn" class="btn-secondary mt-10" data-i18n="options_btn">⚙️ OPTIONS</button>
         </div>
       </div>
     </div>
@@ -303,24 +317,24 @@
     <div class="side-panel right-panel">
       <!-- PIÈCES SUIVANTES (MULTI-NEXT) -->
       <div class="panel-card next-card">
-        <div class="panel-label">SUIVANTS</div>
+        <div class="panel-label" data-i18n="next_label">SUIVANTS</div>
         <canvas id="next-canvas" width="120" height="120"></canvas>
         <div class="multi-next-preview" id="multi-next-container"></div>
       </div>
 
       <!-- PANNEAU PARAMÈTRES AUDIO -->
       <div class="panel-card audio-panel-card">
-        <div class="panel-label">🎵 AUDIO & MUSIQUE</div>
+        <div class="panel-label" data-i18n="audio_label">🎵 AUDIO & MUSIQUE</div>
 
         <div class="audio-track-section">
-          <div class="audio-sublabel">PISTE ACTUELLE</div>
+          <div class="audio-sublabel" data-i18n="track_label">PISTE ACTUELLE</div>
           <div class="track-badge" id="track-name-badge">1. ROCK NU-METAL</div>
-          <button id="track-btn" class="btn-secondary btn-sm full-width mt-6">⏭ CHANGER DE PISTE</button>
+          <button id="track-btn" class="btn-secondary btn-sm full-width mt-6" data-i18n="next_track_btn">⏭ CHANGER DE PISTE</button>
         </div>
 
         <div class="audio-volume-section">
           <div class="volume-header">
-            <span class="audio-sublabel">VOLUME</span>
+            <span class="audio-sublabel" data-i18n="volume_label">VOLUME</span>
             <span id="volume-value-text" class="volume-val">60%</span>
           </div>
           <input type="range" id="volume-slider" min="0" max="100" value="60" class="volume-slider-large" />
@@ -328,22 +342,22 @@
 
         <div class="audio-toggles-section">
           <button id="music-btn" class="toggle-btn active" title="Activer/Couper la Musique">
-            <span class="tgl-icon">🎵</span> Musique
+            <span class="tgl-icon">🎵</span> <span data-i18n="music_label">Musique</span>
           </button>
           <button id="voice-btn" class="toggle-btn active" title="Activer/Couper la Voix">
-            <span class="tgl-icon">🎤</span> Voix
+            <span class="tgl-icon">🎤</span> <span data-i18n="voice_label">Voix</span>
           </button>
         </div>
       </div>
 
       <div class="panel-card">
-        <button id="pause-btn" class="btn-secondary full-width">⏸ PAUSE</button>
+        <button id="pause-btn" class="btn-secondary full-width" data-i18n="pause_title">⏸ PAUSE</button>
       </div>
       <div class="panel-card">
-        <button id="quit-btn" class="btn-secondary full-width danger">⏹ QUITTER</button>
+        <button id="quit-btn" class="btn-secondary full-width danger" data-i18n="quit_btn">⏹ QUITTER</button>
       </div>
       <div class="speed-indicator">
-        <div class="panel-label">VITESSE</div>
+        <div class="panel-label" data-i18n="speed_label">VITESSE</div>
         <div class="speed-dots" id="speed-dots"></div>
       </div>
     </div>

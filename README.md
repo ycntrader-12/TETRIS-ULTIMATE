@@ -26,18 +26,9 @@
   - Immeuble futuriste en construction bloc par bloc en temps réel.
   - Titre *TETRIS ULTIMATE* en relief 3D volumétrique animé avec lueurs néons.
   - Effets sonores d'impact, lasers, arcs électriques et bris de verre.
-- **⚙️ Options Avancées & Thèmes Graphiques** :
-  - Modal d'options complet (Changement musique 30s, Ghost piece, Grid lines, Screen shake, Particules FX).
-  - **Thèmes Visuels** : *Cyberpunk Neon*, *Arcade 8-Bit*, *Matrix Green*, *Vaporwave Sunset*, *Retro Tetris*.
-- **💣 Système de Power-Ups Équilibrés** :
-  - **Bombe (💣 / Touche 1)** : Destruction 3x3 de la pile.
-  - **Temps Ralenti (🧊 / Touche 2)** : Ralentit la vitesse de 50% pendant 10s.
-  - **Supprimer Ligne (⚡ / Touche 3)** : Efface la ligne basse remplie.
-  - **Bouclier (🛡️ / Touche 4)** : Protège contre le Game Over.
-- **🕹️ Multiple Modes de Jeu** : *Classic*, *Time Attack (2 min)*, *Endless*, *Survival*, *Challenge*.
-- **🎖️ Accomplissements (Achievements) & Statistiques** : Niveaux d'XP joueur, 10 succès déblocables et tableau de stats complet.
-- **📱 Contrôles Mobiles Tactiles & Responsive** : D-Pad virtuel et boutons tactiles adaptés aux smartphones et tablettes.
-- **🎤 Commentaires Vocaux en Darija Marocaine (Web Speech API)** : Recommandations vocalisées (*"Nadi!"*, *"Jooj Nadin!"*, *"Tlata Wa3rin!"*, *"Tetris a Sat!"*, *"Kat7raq!"*) avec fallback intelligent.
+- **🌐 Support Multilingue i18n & Mode RTL** :
+  - **4 Langues Supportées** : 🇫🇷 *Français*, 🇬🇧 *English*, 🇲🇦 *العربية / Darija*, 🇪🇸 *Español*.
+  - Bascule dynamique instantanée depuis le modal des options et adaptation automatique de la direction RTL (Right-To-Left) pour l'arabe.
 
 ---
 

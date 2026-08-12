@@ -932,19 +932,20 @@ body::before {
 }
 
 /* ══════════════════════════════════════════
-   THÈMES VISUELS DE JEU
+   MODE MULTILINGUE RTL (RIGHT-TO-LEFT)
 ══════════════════════════════════════════ */
-body.theme-matrix {
-  --bg-dark: #001100;
-  --accent-1: #00ff66; --accent-2: #33ff33; --accent-3: #009933;
+body.rtl-mode {
+  direction: rtl;
+  text-align: right;
 }
-body.theme-vaporwave {
-  --bg-dark: #12002b;
-  --accent-1: #ff71ce; --accent-2: #01cdfe; --accent-3: #05ffa1;
+body.rtl-mode .side-panel {
+  text-align: right;
 }
-body.theme-arcade {
-  --bg-dark: #111111;
-  --accent-1: #ff0000; --accent-2: #ffff00; --accent-3: #0000ff;
+body.rtl-mode .opt-row {
+  flex-direction: row-reverse;
+}
+body.rtl-mode .modal-header {
+  flex-direction: row-reverse;
 }
 
 /* ══════════════════════════════════════════
