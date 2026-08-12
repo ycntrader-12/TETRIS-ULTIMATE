@@ -18,13 +18,17 @@ class TetrisAudio {
     // Distorsion
     this.distortionCurve = this.makeDistortionCurve(50);
 
-    // ── PISTES MUSICALES ──
+    // ── PISTES MUSICALES (8 PISTES AU TOTAL) ──
     this.currentTrackIdx = 0;
     this.tracks = [
       { name: "1. ROCK NU-METAL", bpm: 146 },
       { name: "2. SYNTHWAVE 80s", bpm: 132 },
       { name: "3. CHIPTUNE ARCADE", bpm: 150 },
-      { name: "4. HEAVY METAL", bpm: 160 }
+      { name: "4. HEAVY METAL", bpm: 160 },
+      { name: "5. CYBERPUNK DRIFT", bpm: 142 },
+      { name: "6. PHONK DRIFT", bpm: 138 },
+      { name: "7. DUBSTEP ELECTRO", bpm: 145 },
+      { name: "8. HYPERPOP GLITCH", bpm: 154 }
     ];
 
     this.bpm = this.tracks[0].bpm;
@@ -79,6 +83,29 @@ class TetrisAudio {
       146.83, 146.83, 293.66, 146.83, 261.63, 220.00, 196.00, 174.61,
       146.83, 146.83, 349.23, 146.83, 329.63, 146.83, 293.66, 261.63,
       220.00, 196.00, 174.61, 164.81, 146.83, 146.83, 146.83, 146.83
+    ];
+
+    // ── DONNÉES PISTE 5 : CYBERPUNK DRIFT ──
+    this.cyberDriftRiff = [
+      220.00, 261.63, 293.66, 329.63, 392.00, 440.00, 392.00, 329.63,
+      293.66, 261.63, 220.00, 196.00, 220.00, 261.63, 329.63, 440.00
+    ];
+
+    // ── DONNÉES PISTE 6 : PHONK DRIFT (Cowbell Synth) ──
+    this.phonkRiff = [
+      349.23, 415.30, 466.16, 523.25, 554.37, 523.25, 466.16, 415.30,
+      349.23, 466.16, 523.25, 554.37, 622.25, 554.37, 523.25, 466.16
+    ];
+
+    // ── DONNÉES PISTE 7 : DUBSTEP ELECTRO (Wobble Bass) ──
+    this.dubstepBass = [
+      82.41, 82.41, 98.00, 98.00, 110.00, 110.00, 123.47, 146.83
+    ];
+
+    // ── DONNÉES PISTE 8 : HYPERPOP GLITCH (Fast Arp) ──
+    this.hyperpopArp = [
+      523.25, 659.25, 783.99, 987.77, 1046.50, 783.99, 659.25, 523.25,
+      587.33, 698.46, 880.00, 1046.50, 1174.66, 880.00, 698.46, 587.33
     ];
   }
 
@@ -207,9 +234,38 @@ class TetrisAudio {
 
     if (this.introStep % 2 === 0) this._playRockDrum('kick');
     if (this.introStep % 4 === 2) this._playRockDrum('snare');
-    if (this.introStep % 2 === 1) this._playRockDrum('hihat');
+    this.autoMusicTimer = null;
+    this.autoMusicIntervalSeconds = 30;
+    this.onAutoTrackChange = null;
+  }
 
-    this.introBeatInterval = setTimeout(() => this._scheduleIntroBeat(), interval);
+  startAutoMusicSwitch(callback) {
+    this.stopAutoMusicSwitch();
+    this.onAutoTrackChange = callback;
+    if (this.autoMusicIntervalSeconds <= 0) return;
+
+    this.autoMusicTimer = setInterval(() => {
+      if (this.isPlaying && !this.isMuted) {
+        const next = this.nextTrack();
+        if (typeof this.onAutoTrackChange === 'function') {
+          this.onAutoTrackChange(next);
+        }
+      }
+    }, this.autoMusicIntervalSeconds * 1000);
+  }
+
+  stopAutoMusicSwitch() {
+    if (this.autoMusicTimer) {
+      clearInterval(this.autoMusicTimer);
+      this.autoMusicTimer = null;
+    }
+  }
+
+  setAutoMusicInterval(seconds) {
+    this.autoMusicIntervalSeconds = seconds;
+    if (this.autoMusicTimer) {
+      this.startAutoMusicSwitch(this.onAutoTrackChange);
+    }
   }
 
   nextTrack() {
@@ -249,6 +305,66 @@ class TetrisAudio {
     return this.isMuted;
   }
 
+  // ── EFFETS SONORES AVANCÉS (T-SPIN, BACK-TO-BACK, POWER-UP, ACHIEVEMENTS) ──
+  playTSpin() {
+    if (!this.ctx || this.isMuted) return;
+    const t = this.ctx.currentTime;
+    [587.33, 880, 1174.66].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t + i * 0.05);
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.25, t + i * 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.05 + 0.2);
+      osc.connect(g); g.connect(this.sfxGain);
+      osc.start(t + i * 0.05); osc.stop(t + i * 0.05 + 0.22);
+    });
+  }
+
+  playBackToBack() {
+    if (!this.ctx || this.isMuted) return;
+    const t = this.ctx.currentTime;
+    [659.25, 783.99, 1046.5, 1318.51].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(freq, t + i * 0.04);
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.3, t + i * 0.04);
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.04 + 0.25);
+      osc.connect(g); g.connect(this.sfxGain);
+      osc.start(t + i * 0.04); osc.stop(t + i * 0.04 + 0.28);
+    });
+  }
+
+  playPowerUp() {
+    if (!this.ctx || this.isMuted) return;
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(300, t);
+    osc.frequency.exponentialRampToValueAtTime(1200, t + 0.25);
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.3, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + 0.28);
+    osc.connect(g); g.connect(this.sfxGain);
+    osc.start(t); osc.stop(t + 0.3);
+  }
+
+  playAchievement() {
+    if (!this.ctx || this.isMuted) return;
+    const t = this.ctx.currentTime;
+    [523.25, 659.25, 783.99, 1046.5, 1567.98].forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, t + i * 0.07);
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.2, t + i * 0.07);
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.07 + 0.25);
+      osc.connect(g); g.connect(this.sfxGain);
+      osc.start(t + i * 0.07); osc.stop(t + i * 0.07 + 0.28);
+    });
+  }
+
   _scheduleBeat() {
     if (!this.isPlaying) return;
     const interval = (60 / this.bpm) * 500;
@@ -284,10 +400,125 @@ class TetrisAudio {
         if (this.beatCount % 4 === 2) this._playRockDrum('snare');
         if (this.beatCount % 2 === 1) this._playRockDrum('hihat');
         break;
+
+      case 4: // 5. Cyberpunk Drift
+        this._playCyberDrift();
+        if (this.beatCount % 4 === 0) this._playRockDrum('kick');
+        if (this.beatCount % 4 === 2) this._playRockDrum('snare');
+        if (this.beatCount % 2 === 1) this._playRockDrum('hihat');
+        break;
+
+      case 5: // 6. Phonk Drift (Cowbell)
+        this._playPhonkRiff();
+        if (this.beatCount % 2 === 0) this._playRockDrum('kick');
+        if (this.beatCount % 4 === 2) this._playRockDrum('snare');
+        break;
+
+      case 6: // 7. Dubstep Electro (Wobble)
+        this._playDubstepBass();
+        if (this.beatCount % 4 === 0) this._playRockDrum('kick');
+        if (this.beatCount % 4 === 2) this._playRockDrum('snare');
+        if (this.beatCount % 2 === 1) this._playRockDrum('hihat');
+        break;
+
+      case 7: // 8. Hyperpop Glitch
+        this._playHyperpopArp();
+        if (this.beatCount % 4 === 0) this._playRockDrum('kick');
+        if (this.beatCount % 4 === 2) this._playRockDrum('snare');
+        if (this.beatCount % 2 === 1) this._playRockDrum('hihat');
+        break;
     }
 
     this.beatCount++;
     this.beatInterval = setTimeout(() => this._scheduleBeat(), interval);
+  }
+
+  // ── PISTES AVANCÉES 5 A 8 ──
+  _playCyberDrift() {
+    const freq = this.cyberDriftRiff[this.riffIdx % this.cyberDriftRiff.length];
+    this.riffIdx++;
+    const t = this.ctx.currentTime;
+    const dur = (60 / this.bpm) * 0.42;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(freq, t);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(2800, t);
+
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.2, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+    osc.connect(filter); filter.connect(g); g.connect(this.musicGain);
+    osc.start(t); osc.stop(t + dur + 0.02);
+  }
+
+  _playPhonkRiff() {
+    const freq = this.phonkRiff[this.riffIdx % this.phonkRiff.length];
+    this.riffIdx++;
+    const t = this.ctx.currentTime;
+    const dur = (60 / this.bpm) * 0.35;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'square';
+    osc.frequency.setValueAtTime(freq, t);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1500, t);
+    filter.Q.value = 2;
+
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.25, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+    osc.connect(filter); filter.connect(g); g.connect(this.musicGain);
+    osc.start(t); osc.stop(t + dur + 0.02);
+  }
+
+  _playDubstepBass() {
+    const freq = this.dubstepBass[this.chordIdx % this.dubstepBass.length];
+    this.chordIdx++;
+    const t = this.ctx.currentTime;
+    const dur = (60 / this.bpm) * 0.75;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(freq, t);
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.setValueAtTime(400, t);
+    filter.frequency.exponentialRampToValueAtTime(2400, t + dur * 0.5);
+    filter.frequency.exponentialRampToValueAtTime(400, t + dur);
+
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.35, t);
+    g.gain.exponentialRampToValueAtTime(0.01, t + dur);
+
+    osc.connect(filter); filter.connect(g); g.connect(this.musicGain);
+    osc.start(t); osc.stop(t + dur + 0.02);
+  }
+
+  _playHyperpopArp() {
+    const freq = this.hyperpopArp[this.riffIdx % this.hyperpopArp.length];
+    this.riffIdx++;
+    const t = this.ctx.currentTime;
+    const dur = (60 / this.bpm) * 0.38;
+
+    const osc = this.ctx.createOscillator();
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(freq, t);
+
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(0.2, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+    osc.connect(g); g.connect(this.musicGain);
+    osc.start(t); osc.stop(t + dur + 0.01);
   }
 
   // ── PISTE 1 : ROCK LEAD & POWER CHORDS ──

@@ -2,25 +2,27 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>TETRIS — Ultimate Edition</title>
-  <meta name="description" content="Jeu Tetris immersif avec musique multi-pistes, voix en Darija et classement des scores." />
+  <meta name="description" content="Jeu Tetris immersif avec modes multiples, T-Spin, Power-ups, musique auto-switch 30s, voix Darija et classement." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- CINÉMATIQUE D'INTRO ANIME -->
+  <!-- CINÉMATIQUE D'INTRO ANIME AVEC TITRE 3D -->
   <div id="intro-screen" class="overlay">
     <canvas id="intro-canvas"></canvas>
     <div class="intro-controls">
       <button id="skip-intro-btn" class="skip-btn">PASSER L'INTRO ⏭</button>
     </div>
     <div id="intro-title-group" class="intro-title-group hidden">
-      <h1 class="intro-main-title">TETRIS</h1>
-      <div class="intro-sub-title">ULTIMATE</div>
+      <div class="title-3d-scene">
+        <h1 class="intro-main-title 3d-text" data-text="TETRIS">TETRIS</h1>
+        <div class="intro-sub-title 3d-text-sub" data-text="ULTIMATE">ULTIMATE</div>
+      </div>
       <div class="intro-tagline">⚡ CREATED BY YCNTRADER-12 ⚡</div>
     </div>
   </div>
@@ -46,27 +48,43 @@
           <div class="preview-block b7"></div>
         </div>
 
-        <div class="controls-hint">
-          <p>← → : Déplacer &nbsp;|&nbsp; ↑ : Rotation &nbsp;|&nbsp; ↓ : Descendre &nbsp;|&nbsp; Space : Chute</p>
+        <!-- SÉLECTEUR DE MODE DE JEU -->
+        <div class="mode-selector-group">
+          <div class="panel-label">MODE DE JEU :</div>
+          <div class="mode-buttons-row">
+            <button class="mode-btn active" data-mode="classic" title="Progression classique par niveaux">CLASSIC</button>
+            <button class="mode-btn" data-mode="timeattack" title="2 minutes pour maximiser le score">TIME ATTACK</button>
+            <button class="mode-btn" data-mode="endless" title="Partie sans limite de niveau">ENDLESS</button>
+            <button class="mode-btn" data-mode="survival" title="Accélération extrême continue">SURVIVAL</button>
+            <button class="mode-btn" data-mode="challenge" title="Objectifs spécifiques à réaliser">CHALLENGE</button>
+          </div>
+          <div id="mode-description-text" class="mode-desc">Mode Classic : Progression standard et montée de niveau toutes les 10 lignes.</div>
         </div>
 
         <button id="start-btn" class="btn-primary pulse-btn">▶ JOUER</button>
 
         <div class="difficulty-selector">
-          <span>Niveau de départ :</span>
-          <button class="diff-btn active" data-level="1">FACILE</button>
-          <button class="diff-btn" data-level="5">NORMAL</button>
-          <button class="diff-btn" data-level="10">EXPERT</button>
+          <span>Niveau initial :</span>
+          <button class="diff-btn active" data-level="1">1</button>
+          <button class="diff-btn" data-level="5">5</button>
+          <button class="diff-btn" data-level="10">10</button>
+          <button class="diff-btn" data-level="15">15</button>
         </div>
 
         <div class="start-menu-actions">
           <button id="show-start-scores-btn" class="btn-secondary">🏆 SCORES</button>
-          <button id="replay-intro-btn" class="btn-secondary">🎬 INTRO</button>
+          <button id="show-achievements-btn" class="btn-secondary">🎖️ SUCCÈS</button>
+          <button id="show-stats-btn" class="btn-secondary">📊 STATS</button>
+          <button id="show-options-btn" class="btn-secondary">⚙️ OPTIONS</button>
+        </div>
+
+        <div class="start-secondary-actions">
+          <button id="replay-intro-btn" class="btn-secondary btn-sm">🎬 INTRO</button>
         </div>
 
         <!-- SIGNATURE -->
         <div class="creator-signature">
-          <span class="sig-label">CRÉÉE PAR</span>
+          <span class="sig-label">CRÉÉ PAR</span>
           <span class="sig-name">ycntrader-12</span>
         </div>
       </div>
@@ -130,11 +148,109 @@
     </div>
   </div>
 
+  <!-- MODAL OPTIONS AVANCÉES -->
+  <div id="advanced-options-modal" class="overlay hidden">
+    <div class="overlay-content modal-large">
+      <div class="modal-header">
+        <h2>⚙️ OPTIONS AVANCÉES</h2>
+        <button class="close-modal-btn" id="close-options-btn">✕</button>
+      </div>
+
+      <div class="options-sections-container">
+        <!-- AUDION & MUSIQUE 30S -->
+        <div class="options-group">
+          <h3>🎵 Musique & Rotation Auto (30s)</h3>
+          <div class="opt-row">
+            <label for="opt-automusic">Changement Auto de Musique :</label>
+            <input type="checkbox" id="opt-automusic" class="toggle-checkbox" checked />
+          </div>
+          <div class="opt-row">
+            <label for="opt-music-interval">Intervalle de Rotation :</label>
+            <select id="opt-music-interval" class="opt-select">
+              <option value="15">15 secondes</option>
+              <option value="30" selected>30 secondes (Recommandé)</option>
+              <option value="60">60 secondes</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- GAMEPLAY & EFFETS -->
+        <div class="options-group">
+          <h3>🎮 Visuel & Effets de Jeu</h3>
+          <div class="opt-row">
+            <label for="opt-ghost">Fantôme de Pièce (Ghost Piece) :</label>
+            <input type="checkbox" id="opt-ghost" class="toggle-checkbox" checked />
+          </div>
+          <div class="opt-row">
+            <label for="opt-grid">Grille du Plateau :</label>
+            <input type="checkbox" id="opt-grid" class="toggle-checkbox" checked />
+          </div>
+          <div class="opt-row">
+            <label for="opt-shake">Secousse d'écran (Screen Shake) :</label>
+            <input type="checkbox" id="opt-shake" class="toggle-checkbox" checked />
+          </div>
+          <div class="opt-row">
+            <label for="opt-particles">Effets de Particules :</label>
+            <select id="opt-particles" class="opt-select">
+              <option value="high" selected>Élevé (Plein d'étincelles)</option>
+              <option value="low">Faible (Économie)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- THÈMES DE COULEURS -->
+        <div class="options-group">
+          <h3>🎨 Thème Visuel</h3>
+          <div class="opt-row">
+            <label for="opt-theme">Style de Thème :</label>
+            <select id="opt-theme" class="opt-select">
+              <option value="cyberpunk" selected>Cyberpunk Neon</option>
+              <option value="arcade">Arcade 8-Bit</option>
+              <option value="matrix">Matrix Green</option>
+              <option value="vaporwave">Vaporwave Sunset</option>
+              <option value="classic">Retro Tetris</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <button id="save-options-btn" class="btn-primary full-width mt-10">✔ SAUVEGARDER & APPLIQUER</button>
+    </div>
+  </div>
+
+  <!-- MODAL ACHIEVEMENTS / SUCCÈS -->
+  <div id="achievements-modal" class="overlay hidden">
+    <div class="overlay-content modal-large">
+      <div class="modal-header">
+        <h2>🎖️ ACCOMPLISSEMENTS & SUCCÈS</h2>
+        <button class="close-modal-btn" id="close-achievements-btn">✕</button>
+      </div>
+      <div id="achievements-list-container" class="achievements-grid"></div>
+    </div>
+  </div>
+
+  <!-- MODAL STATISTIQUES -->
+  <div id="stats-modal" class="overlay hidden">
+    <div class="overlay-content modal-large">
+      <div class="modal-header">
+        <h2>📊 STATISTIQUES DU JOUEUR</h2>
+        <button class="close-modal-btn" id="close-stats-btn">✕</button>
+      </div>
+      <div id="stats-content-container" class="stats-grid"></div>
+    </div>
+  </div>
+
   <!-- INTERFACE PRINCIPALE DU JEU -->
   <div id="game-wrapper" class="hidden">
 
     <!-- PANNEAU GAUCHE -->
     <div class="side-panel left-panel">
+      <!-- HOLD PIECE -->
+      <div class="panel-card hold-card">
+        <div class="panel-label">RÉSERVE (HOLD / C)</div>
+        <canvas id="hold-canvas" width="100" height="100"></canvas>
+      </div>
+
       <div class="panel-card">
         <div class="panel-label">SCORE</div>
         <div class="panel-value" id="score-display">0</div>
@@ -154,41 +270,47 @@
           <div class="level-bar-fill" id="level-bar"></div>
         </div>
       </div>
-      <div class="panel-card controls-card">
-        <div class="panel-label">CONTRÔLES</div>
-        <div class="controls-list">
-          <div class="ctrl"><span>← →</span><span>Déplacer</span></div>
-          <div class="ctrl"><span>↑</span><span>Rotation</span></div>
-          <div class="ctrl"><span>↓</span><span>Descente</span></div>
-          <div class="ctrl"><span>Space</span><span>Chute</span></div>
-          <div class="ctrl"><span>P</span><span>Pause</span></div>
-          <div class="ctrl"><span>M</span><span>Musique</span></div>
-        </div>
+
+      <!-- TIMER DU MODE DE JEU -->
+      <div class="panel-card mode-timer-card hidden" id="mode-timer-card">
+        <div class="panel-label">TEMPS RESTANT</div>
+        <div class="panel-value timer-value" id="mode-timer-display">02:00</div>
       </div>
     </div>
 
     <!-- CANVAS 2D -->
     <div id="canvas-container">
+      <!-- BARRE DE POWER-UPS DE JEU -->
+      <div class="powerups-hud-bar" id="powerups-hud-bar">
+        <button class="powerup-btn" data-powerup="bomb" id="pu-bomb-btn" title="Bombe (Bâtiment 3x3)">💣 <span>1</span></button>
+        <button class="powerup-btn" data-powerup="freeze" id="pu-freeze-btn" title="Ralenti Temporel (10s)">🧊 <span>2</span></button>
+        <button class="powerup-btn" data-powerup="clearline" id="pu-clear-btn" title="Supprimer la Ligne Basse">⚡ <span>3</span></button>
+        <button class="powerup-btn" data-powerup="shield" id="pu-shield-btn" title="Bouclier Anti-Chute">🛡️ <span>4</span></button>
+      </div>
+
       <canvas id="tetris-canvas"></canvas>
+
       <div id="pause-overlay" class="hidden">
         <div class="pause-content">
           <h2>PAUSE</h2>
           <button id="resume-btn" class="btn-primary">▶ REPRENDRE</button>
+          <button id="in-game-options-btn" class="btn-secondary mt-10">⚙️ OPTIONS</button>
         </div>
       </div>
     </div>
 
     <!-- PANNEAU DROIT -->
     <div class="side-panel right-panel">
-      <!-- PIECE SUIVANTE -->
+      <!-- PIÈCES SUIVANTES (MULTI-NEXT) -->
       <div class="panel-card next-card">
-        <div class="panel-label">SUIVANT</div>
+        <div class="panel-label">SUIVANTS</div>
         <canvas id="next-canvas" width="120" height="120"></canvas>
+        <div class="multi-next-preview" id="multi-next-container"></div>
       </div>
 
       <!-- PANNEAU PARAMÈTRES AUDIO -->
       <div class="panel-card audio-panel-card">
-        <div class="panel-label">🎵 PARAMÈTRES AUDIO</div>
+        <div class="panel-label">🎵 AUDIO & MUSIQUE</div>
 
         <div class="audio-track-section">
           <div class="audio-sublabel">PISTE ACTUELLE</div>
@@ -225,6 +347,21 @@
         <div class="speed-dots" id="speed-dots"></div>
       </div>
     </div>
+
+    <!-- CONTRÔLES TACTILES MOBILES (VIRTUAL D-PAD & BUTTONS) -->
+    <div id="touch-controls" class="touch-controls-container">
+      <div class="touch-dpad">
+        <button class="touch-btn" id="touch-left">◄</button>
+        <button class="touch-btn" id="touch-right">►</button>
+        <button class="touch-btn" id="touch-down">▼</button>
+      </div>
+      <div class="touch-actions">
+        <button class="touch-btn touch-action-btn" id="touch-rotate">↻</button>
+        <button class="touch-btn touch-action-btn touch-drop-btn" id="touch-drop">⤓</button>
+        <button class="touch-btn touch-action-btn" id="touch-hold">📦</button>
+      </div>
+    </div>
+
   </div>
 
   <!-- NOTIFICATIONS -->
