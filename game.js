@@ -971,6 +971,7 @@ const TRANSLATIONS = {
     opt_title: "⚙️ OPTIONS AVANCÉES",
     opt_music_title: "🎵 Musique & Rotation Auto (30s)",
     opt_automusic: "Changement Auto de Musique :",
+    opt_fanvoice: "Voix des Fans & Spectateurs :",
     opt_interval: "Intervalle de Rotation :",
     opt_lang_title: "🌐 Langue / Language",
     opt_lang_label: "Langue de l'interface :",
@@ -1046,6 +1047,7 @@ const TRANSLATIONS = {
     opt_title: "⚙️ ADVANCED SETTINGS",
     opt_music_title: "🎵 Music & Auto-Switch (30s)",
     opt_automusic: "Auto Music Switch:",
+    opt_fanvoice: "Fan Spectator Voices:",
     opt_interval: "Switch Interval:",
     opt_lang_title: "🌐 Language",
     opt_lang_label: "Interface Language:",
@@ -1121,6 +1123,7 @@ const TRANSLATIONS = {
     opt_title: "⚙️ خيارات متقدمة",
     opt_music_title: "🎵 الموسيقى والتبديل التلقائي (30ث)",
     opt_automusic: "تبديل الموسيقى تلقائياً:",
+    opt_fanvoice: "أصوات تشجيع الجماهير والجمهور:",
     opt_interval: "معدل التبديل:",
     opt_lang_title: "🌐 اللغة / Language",
     opt_lang_label: "لغة الواجهة:",
@@ -1196,6 +1199,7 @@ const TRANSLATIONS = {
     opt_title: "⚙️ OPCIONES AVANZADAS",
     opt_music_title: "🎵 Música y Auto-Cambio (30s)",
     opt_automusic: "Cambio Auto de Música:",
+    opt_fanvoice: "Voces del Público y Fans:",
     opt_interval: "Intervalo de Cambio:",
     opt_lang_title: "🌐 Idioma / Language",
     opt_lang_label: "Idioma de la Interfaz:",
@@ -1515,6 +1519,8 @@ class TetrisController {
     if (saveBtn) {
       saveBtn.addEventListener('click', () => {
         this.options.autoMusic = document.getElementById('opt-automusic').checked;
+        const fanVoiceEl = document.getElementById('opt-fanvoice');
+        if (fanVoiceEl) this.options.fanVoice = fanVoiceEl.checked;
         this.options.autoMusicInterval = parseInt(document.getElementById('opt-music-interval').value);
         this.options.ghost = document.getElementById('opt-ghost').checked;
         this.options.grid = document.getElementById('opt-grid').checked;

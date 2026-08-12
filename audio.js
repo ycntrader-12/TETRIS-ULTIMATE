@@ -1049,6 +1049,35 @@ class TetrisAudio {
       osc.start(t); osc.stop(t + 0.85);
     });
   }
+
+  playCrowdCheer(intensity = 'medium') {
+    if (!this.ctx || this.isMuted) return;
+    const t = this.ctx.currentTime;
+    const dur = intensity === 'high' ? 1.5 : 0.8;
+
+    const bufSize = this.ctx.sampleRate * dur;
+    const buf = this.ctx.createBuffer(1, bufSize, this.ctx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < bufSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / bufSize, 1.5);
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buf;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(1200, t);
+    filter.frequency.linearRampToValueAtTime(1800, t + dur * 0.5);
+    filter.frequency.linearRampToValueAtTime(800, t + dur);
+    filter.Q.value = 1.2;
+
+    const g = this.ctx.createGain();
+    g.gain.setValueAtTime(intensity === 'high' ? 0.45 : 0.25, t);
+    g.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+    noise.connect(filter); filter.connect(g); g.connect(this.sfxGain);
+    noise.start(t); noise.stop(t + dur);
+  }
 }
 
 window.TetrisAudio = TetrisAudio;
@@ -1261,3 +1290,75 @@ class TetrisVoice {
 }
 
 window.TetrisVoice = TetrisVoice;
+
+// ══════════════════════════════════════════
+//  FAN SPECTATOR CROWD VOICE ENGINE
+// ══════════════════════════════════════════
+
+class TetrisFanVoice {
+  constructor(mainVoiceEngine) {
+    this.enabled = true;
+    this.mainVoice = mainVoiceEngine;
+  }
+
+  setLanguage(lang) {
+    if (this.mainVoice) this.mainVoice.setLanguage(lang);
+  }
+
+  onSpectatorCheer(event) {
+    if (!this.enabled || !this.mainVoice || !this.mainVoice.enabled) return;
+
+    const lang = this.mainVoice.lang || 'fr';
+    const fanPhrases = {
+      tspin: {
+        fr: ["Quel génie du Tetris !", "Incroyable T-Spin !", "Magnifique !"],
+        en: ["What a genius!", "Incredible T-Spin!", "Awesome!"],
+        ar: ["يا سلام على التكتيك!", "معلم كبيييير!", "خطير بزاف!"],
+        es: ["¡Qué genio!", "¡T-Spin espectacular!", "¡Increíble!"]
+      },
+      b2b: {
+        fr: ["Il est imbattable !", "Encore un coup parfait !", "C'est du grand art !"],
+        en: ["He's unstoppable!", "Another perfect move!", "Pure art!"],
+        ar: ["ما كاينش اللي يوقف هذا الساط!", "ضربة قاضية!", "يا سلام عليك!"],
+        es: ["¡Es imparable!", "¡Otro golpe perfecto!", "¡Gran jugada!"]
+      },
+      tetris: {
+        fr: ["ET DE 4 LIGNES !", "LE TETRIS PARFAIT !", "OUAAAH !"],
+        en: ["FOUR LINES IN ONE!", "PERFECT TETRIS!", "WOOOOOAH!"],
+        ar: ["ربااااعي خطييير!", "تطريس اسطوري!", "واااااو!"],
+        es: ["¡CUATRO LÍNEAS DE GOLPE!", "¡TETRIS PERFECTO!", "¡WOOOOW!"]
+      },
+      combo: {
+        fr: ["La foule est en délire !", "Le combo continue !", "Allez Allez !"],
+        en: ["The crowd is going wild!", "Keep the combo going!", "Go Go Go!"],
+        ar: ["الجمهور شاعل!", "زيّد كمّل!", "عاش البطل!"],
+        es: ["¡La multitud se vuelve loca!", "¡Sigue el combo!", "¡Vamos Vamos!"]
+      },
+      danger: {
+        fr: ["Attention la tour va tomber !", "Ooh la la !", "Sauve la planche !"],
+        en: ["Watch out, the tower is falling!", "Oh no!", "Save the board!"],
+        ar: ["عنداك الطابق يطيح!", "رد البال!", "عتق راسك!"],
+        es: ["¡Cuidado que se cae la torre!", "¡Ooh no!", "¡Salva la partida!"]
+      },
+      gameover: {
+        fr: ["Superbe partie !", "Tu feras mieux la prochaine fois !", "Bravo quand même !"],
+        en: ["Great game!", "You'll do better next time!", "GG!"],
+        ar: ["ماتش واعِر!", "المرة الجاية ان شاء الله!", "برافو عليك!"],
+        es: ["¡Buena partida!", "¡La próxima será mejor!", "¡Bien jugado!"]
+      }
+    };
+
+    const list = fanPhrases[event] ? fanPhrases[event][lang] || fanPhrases[event].fr : null;
+    if (!list || !list.length) return;
+
+    const phrase = list[Math.floor(Math.random() * list.length)];
+    const pitch = 0.95 + Math.random() * 0.4;
+    const rate = 1.05 + Math.random() * 0.2;
+
+    setTimeout(() => {
+      this.mainVoice.say(phrase, { pitch, rate, vol: 0.9 });
+    }, 280);
+  }
+}
+
+window.TetrisFanVoice = TetrisFanVoice;
