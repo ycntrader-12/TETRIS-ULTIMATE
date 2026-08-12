@@ -1009,8 +1009,87 @@ body.rtl-mode .modal-header {
 ::-webkit-scrollbar-thumb { background: var(--accent-1); border-radius: 2px; }
 
 /* ══════════════════════════════════════════
-   RESPONSIVE & MOBILE TOUCH
+   RESPONSIVE & BOUTONS TACTILES MOBILES
 ══════════════════════════════════════════ */
+
+/* Conteneur des contrôles tactiles */
+.touch-controls-container {
+  display: none;
+  width: 100%;
+  max-width: 520px;
+  margin: 6px auto 0;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 6px;
+  gap: 8px;
+  z-index: 50;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  flex-shrink: 0;
+}
+
+.touch-dpad, .touch-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.touch-btn {
+  min-width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: rgba(18, 18, 50, 0.88);
+  border: 1.5px solid rgba(108, 63, 255, 0.45);
+  color: var(--text-white);
+  font-family: var(--font-game);
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  transition: transform 0.1s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  cursor: pointer;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.touch-btn:active, .touch-btn.active-touch {
+  transform: scale(0.92);
+  background: rgba(108, 63, 255, 0.45);
+  border-color: var(--accent-2);
+  box-shadow: 0 0 18px rgba(0, 212, 255, 0.6);
+}
+
+.touch-action-btn {
+  border-radius: 50%;
+  background: rgba(0, 212, 255, 0.15);
+  border-color: rgba(0, 212, 255, 0.5);
+  color: var(--accent-2);
+}
+
+.touch-drop-btn {
+  background: rgba(255, 63, 154, 0.2);
+  border-color: rgba(255, 63, 154, 0.6);
+  color: var(--accent-3);
+}
+
+.touch-drop-btn:active, .touch-drop-btn.active-touch {
+  background: rgba(255, 63, 154, 0.5);
+  box-shadow: 0 0 20px rgba(255, 63, 154, 0.8);
+}
+
+/* Écrans tactiles ou mobiles */
+@media (pointer: coarse), (max-width: 850px) {
+  .touch-controls-container {
+    display: flex;
+  }
+}
+
+/* Adaptation pour écrans moyens (tablettes/ordinateurs portables) */
 @media (max-width: 1000px) {
   :root { --panel-w: 165px; }
   .panel-value { font-size: 22px; }
@@ -1018,21 +1097,147 @@ body.rtl-mode .modal-header {
   .level-value { font-size: 28px; }
 }
 
-@media (max-width: 780px) {
-  :root { --panel-w: 130px; }
-  #game-wrapper { padding: 8px; gap: 8px; }
-  .panel-value { font-size: 18px; }
-  .panel-label { font-size: 9px; }
-  .ctrl > :first-child { font-size: 10px; padding: 2px 5px; }
-  .ctrl span { font-size: 11px; }
-  .touch-controls-container { display: flex; }
+/* Adaptation réactive complète Mobile (< 850px) */
+@media (max-width: 850px) {
+  html, body {
+    overflow-y: auto;
+    height: 100%;
+  }
+
+  #game-wrapper {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    height: 100dvh;
+    padding: 6px 8px;
+    gap: 6px;
+    box-sizing: border-box;
+  }
+
+  .side-panel {
+    flex-direction: row;
+    width: 100%;
+    max-width: 520px;
+    height: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 6px;
+    padding: 2px 0;
+    flex-shrink: 0;
+    justify-content: space-between;
+  }
+
+  .side-panel.left-panel { order: 1; }
+  #canvas-container { order: 2; flex: 1; min-height: 0; max-height: 58vh; width: 100%; }
+  .side-panel.right-panel { order: 3; }
+  .touch-controls-container { order: 4; }
+
+  .panel-card {
+    padding: 6px 8px;
+    flex: 1;
+    min-width: 65px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .panel-label {
+    font-size: 8px;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+    white-space: nowrap;
+  }
+
+  .panel-value {
+    font-size: 16px;
+  }
+
+  #score-display, #best-display {
+    font-size: 15px;
+  }
+
+  .level-value {
+    font-size: 20px;
+  }
+
+  .hold-card canvas, .next-card canvas {
+    width: 45px !important;
+    height: 45px !important;
+  }
+
+  .multi-next-preview, .audio-panel-card, .controls-card {
+    display: none !important;
+  }
+
+  .audio-panel-card {
+    display: flex !important;
+    padding: 4px 6px;
+  }
+  .audio-track-section, .audio-volume-section {
+    display: none !important;
+  }
+
+  /* Modaux réactifs pour mobile */
+  .overlay-content {
+    max-width: 94vw !important;
+    max-height: 92vh !important;
+    padding: 16px 14px !important;
+    overflow-y: auto;
+  }
+
+  .overlay-content.modal-large {
+    width: 95vw !important;
+  }
+
+  .mode-buttons-row {
+    flex-wrap: wrap;
+  }
+
+  .mode-btn {
+    flex: 1 1 40%;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
+
+  .options-sections-container {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .game-title {
+    font-size: clamp(36px, 10vw, 56px);
+  }
+
+  .subtitle-3d {
+    font-size: clamp(14px, 4vw, 22px);
+  }
 }
 
-@media (max-width: 620px) {
-  #game-wrapper { flex-direction: column; padding: 6px; gap: 6px; height: auto; min-height: 100vh; }
-  .side-panel { flex-direction: row; width: 100%; height: auto; flex-wrap: wrap; }
-  .panel-card { flex: 1; min-width: 90px; }
-  .controls-card { display: none; }
-  .touch-controls-container { display: flex; }
+/* Très petits écrans (< 480px) */
+@media (max-width: 480px) {
+  .touch-btn {
+    min-width: 44px;
+    height: 44px;
+    font-size: 16px;
+    border-radius: 12px;
+  }
+
+  .touch-dpad, .touch-actions {
+    gap: 5px;
+  }
+
+  .powerups-hud-bar {
+    padding: 3px 6px;
+    gap: 4px;
+  }
+
+  .powerup-btn {
+    padding: 4px 8px;
+    font-size: 11px;
+  }
 }
+
 

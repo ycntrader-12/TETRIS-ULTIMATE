@@ -1497,6 +1497,13 @@ class TetrisController {
     }
 
     if (this.ui.saveScoreBtn) this.ui.saveScoreBtn.addEventListener('click', () => this._handleSaveInitials());
+
+    // Contrôles tactiles mobiles & Gestes swipe & Redimensionnement
+    this._bindTouchControls();
+    this._bindSwipeGestures();
+
+    window.addEventListener('resize', () => this._handleResize());
+    window.addEventListener('orientationchange', () => setTimeout(() => this._handleResize(), 150));
   }
 
   _setupModal(openBtnId, modalId, closeBtnId, onOpen) {
@@ -1538,25 +1545,175 @@ class TetrisController {
   }
 
   _bindTouchControls() {
-    const bind = (id, fn) => {
+    const bindHold = (id, actionFn) => {
       const el = document.getElementById(id);
       if (!el) return;
-      el.addEventListener('touchstart', (e) => { e.preventDefault(); fn(); });
-      el.addEventListener('click', (e) => { e.preventDefault(); fn(); });
+
+      let intervalId = null;
+      let timeoutId = null;
+
+      const stop = (e) => {
+        if (e && e.cancelable) e.preventDefault();
+        el.classList.remove('active-touch');
+        if (timeoutId) { clearTimeout(timeoutId); timeoutId = null; }
+        if (intervalId) { clearInterval(intervalId); intervalId = null; }
+      };
+
+      const start = (e) => {
+        if (e.cancelable) e.preventDefault();
+        stop();
+        el.classList.add('active-touch');
+        actionFn();
+
+        timeoutId = setTimeout(() => {
+          intervalId = setInterval(() => {
+            if (!this.game.running || this.game.paused || this.game.gameOver) {
+              stop();
+              return;
+            }
+            actionFn();
+          }, 85);
+        }, 190);
+      };
+
+      el.addEventListener('touchstart', start, { passive: false });
+      el.addEventListener('touchend', stop, { passive: false });
+      el.addEventListener('touchcancel', stop, { passive: false });
+      el.addEventListener('mousedown', start);
+      el.addEventListener('mouseup', stop);
+      el.addEventListener('mouseleave', stop);
     };
 
-    bind('touch-left', () => { if (this.game.moveLeft()) { this.audio.playMove(); this._renderPiece(); } });
-    bind('touch-right', () => { if (this.game.moveRight()) { this.audio.playMove(); this._renderPiece(); } });
-    bind('touch-down', () => { this._softDrop(); });
-    bind('touch-rotate', () => { if (this.game.rotate('CW')) { this.audio.playRotate(); this._renderPiece(); } });
-    bind('touch-drop', () => { this.audio.playDrop(); this.game.hardDrop(); this._onPieceLocked(); });
-    bind('touch-hold', () => {
-      if (this.game.hold()) {
+    const bindSingle = (id, actionFn) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const handler = (e) => {
+        if (e.cancelable) e.preventDefault();
+        el.classList.add('active-touch');
+        setTimeout(() => el.classList.remove('active-touch'), 150);
+        actionFn();
+      };
+      el.addEventListener('touchstart', handler, { passive: false });
+      el.addEventListener('click', (e) => {
+        if (e.pointerType === 'touch') return;
+        actionFn();
+      });
+    };
+
+    bindHold('touch-left', () => {
+      if (this.game.running && !this.game.paused && this.game.moveLeft()) {
+        this.audio.playMove();
+        this._renderPiece();
+      }
+    });
+
+    bindHold('touch-right', () => {
+      if (this.game.running && !this.game.paused && this.game.moveRight()) {
+        this.audio.playMove();
+        this._renderPiece();
+      }
+    });
+
+    bindHold('touch-down', () => {
+      if (this.game.running && !this.game.paused) {
+        this._softDrop();
+      }
+    });
+
+    bindSingle('touch-rotate', () => {
+      if (this.game.running && !this.game.paused && this.game.rotate('CW')) {
+        this.audio.playRotate();
+        this._renderPiece();
+      }
+    });
+
+    bindSingle('touch-drop', () => {
+      if (this.game.running && !this.game.paused) {
+        this.audio.playDrop();
+        this.game.hardDrop();
+        if (this.options && this.options.shake) this._triggerScreenShake();
+        this._onPieceLocked();
+      }
+    });
+
+    bindSingle('touch-hold', () => {
+      if (this.game.running && !this.game.paused && this.game.hold()) {
         this.audio.playHold();
         drawMiniPiece(this.ui.holdCanvas, this.game.heldPiece);
         this._renderPiece();
       }
     });
+  }
+
+  _bindSwipeGestures() {
+    const canvas = document.getElementById('tetris-canvas');
+    if (!canvas) return;
+
+    let startX = 0;
+    let startY = 0;
+    let startTime = 0;
+    const minSwipeDist = 30;
+
+    canvas.addEventListener('touchstart', (e) => {
+      if (e.touches.length === 1) {
+        startX = e.touches[0].clientX;
+        startY = e.touches[0].clientY;
+        startTime = Date.now();
+      }
+    }, { passive: true });
+
+    canvas.addEventListener('touchend', (e) => {
+      if (!this.game.running || this.game.paused || this.game.gameOver) return;
+      if (e.changedTouches.length === 1) {
+        const endX = e.changedTouches[0].clientX;
+        const endY = e.changedTouches[0].clientY;
+        const diffX = endX - startX;
+        const diffY = endY - startY;
+        const duration = Date.now() - startTime;
+
+        if (Math.abs(diffX) < 15 && Math.abs(diffY) < 15 && duration < 250) {
+          // Tap: Rotation
+          if (this.game.rotate('CW')) {
+            this.audio.playRotate();
+            this._renderPiece();
+          }
+        } else if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > minSwipeDist) {
+          // Horizontal Swipe
+          if (diffX > 0) {
+            if (this.game.moveRight()) { this.audio.playMove(); this._renderPiece(); }
+          } else {
+            if (this.game.moveLeft()) { this.audio.playMove(); this._renderPiece(); }
+          }
+        } else if (Math.abs(diffY) > Math.abs(diffX) && Math.abs(diffY) > minSwipeDist) {
+          // Vertical Swipe
+          if (diffY > 0) {
+            if (duration < 200 && diffY > 60) {
+              this.audio.playDrop();
+              this.game.hardDrop();
+              if (this.options && this.options.shake) this._triggerScreenShake();
+              this._onPieceLocked();
+            } else {
+              this._softDrop();
+            }
+          } else {
+            if (this.game.hold()) {
+              this.audio.playHold();
+              drawMiniPiece(this.ui.holdCanvas, this.game.heldPiece);
+              this._renderPiece();
+            }
+          }
+        }
+      }
+    }, { passive: true });
+  }
+
+  _handleResize() {
+    this._renderBoard();
+    if (this.game && this.game.running) {
+      this._renderPiece();
+      if (this.ui.nextCanvas) drawMiniPiece(this.ui.nextCanvas, this.game.nextQueue[0]);
+      if (this.ui.holdCanvas) drawMiniPiece(this.ui.holdCanvas, this.game.heldPiece);
+    }
   }
 
   _onKey(e) {
