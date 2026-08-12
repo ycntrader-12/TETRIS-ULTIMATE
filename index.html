@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TETRIS — Ultimate Edition</title>
+  <meta name="description" content="Jeu Tetris immersif avec musique multi-pistes, voix en Darija et classement des scores." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- CINÉMATIQUE D'INTRO ANIME -->
+  <div id="intro-screen" class="overlay">
+    <canvas id="intro-canvas"></canvas>
+    <div class="intro-controls">
+      <button id="skip-intro-btn" class="skip-btn">PASSER L'INTRO ⏭</button>
+    </div>
+    <div id="intro-title-group" class="intro-title-group hidden">
+      <h1 class="intro-main-title">TETRIS</h1>
+      <div class="intro-sub-title">ULTIMATE</div>
+      <div class="intro-tagline">⚡ CREATED BY YCNTRADER-12 ⚡</div>
+    </div>
+  </div>
+
+  <!-- ÉCRAN DE DÉMARRAGE -->
+  <div id="start-screen" class="overlay hidden">
+    <div class="overlay-content">
+
+      <!-- VUE PRINCIPALE DU MENU -->
+      <div id="start-main-view" class="menu-view">
+        <div class="logo-container">
+          <h1 class="game-title">TETRIS</h1>
+          <span class="subtitle-3d">ULTIMATE</span>
+        </div>
+
+        <div class="start-blocks-preview">
+          <div class="preview-block b1"></div>
+          <div class="preview-block b2"></div>
+          <div class="preview-block b3"></div>
+          <div class="preview-block b4"></div>
+          <div class="preview-block b5"></div>
+          <div class="preview-block b6"></div>
+          <div class="preview-block b7"></div>
+        </div>
+
+        <div class="controls-hint">
+          <p>← → : Déplacer &nbsp;|&nbsp; ↑ : Rotation &nbsp;|&nbsp; ↓ : Descendre &nbsp;|&nbsp; Space : Chute</p>
+        </div>
+
+        <button id="start-btn" class="btn-primary pulse-btn">▶ JOUER</button>
+
+        <div class="difficulty-selector">
+          <span>Niveau de départ :</span>
+          <button class="diff-btn active" data-level="1">FACILE</button>
+          <button class="diff-btn" data-level="5">NORMAL</button>
+          <button class="diff-btn" data-level="10">EXPERT</button>
+        </div>
+
+        <div class="start-menu-actions">
+          <button id="show-start-scores-btn" class="btn-secondary">🏆 SCORES</button>
+          <button id="replay-intro-btn" class="btn-secondary">🎬 INTRO</button>
+        </div>
+
+        <!-- SIGNATURE -->
+        <div class="creator-signature">
+          <span class="sig-label">CRÉÉE PAR</span>
+          <span class="sig-name">ycntrader-12</span>
+        </div>
+      </div>
+
+      <!-- VUE CLASSEMENT DES SCORES (MENU) -->
+      <div id="start-scores-view" class="menu-view hidden">
+        <div class="panel-label title-label">🏆 TOP MEILLEURS SCORES</div>
+        <div id="start-leaderboard-list" class="leaderboard-list"></div>
+        <button id="back-to-start-btn" class="btn-secondary mt-10">← RETOUR AU MENU</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ÉCRAN GAME OVER -->
+  <div id="gameover-screen" class="overlay hidden">
+    <div class="overlay-content">
+
+      <!-- VUE PRINCIPALE GAME OVER -->
+      <div id="gameover-main-view" class="menu-view">
+        <h2 class="gameover-title">GAME OVER</h2>
+
+        <div class="final-stats">
+          <div class="stat-item">
+            <span class="stat-label">SCORE</span>
+            <span class="stat-value" id="final-score">0</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">NIVEAU</span>
+            <span class="stat-value" id="final-level">1</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">LIGNES</span>
+            <span class="stat-value" id="final-lines">0</span>
+          </div>
+        </div>
+
+        <!-- FORMULAIRE SURNOM (3 LETTRES) -->
+        <div class="initials-box" id="initials-box">
+          <div class="panel-label">ENTRER VOS INITIALES (3 LETTRES)</div>
+          <div class="initials-input-group">
+            <input type="text" id="initials-input" maxlength="3" placeholder="YCN" autocomplete="off" spellcheck="false" />
+            <button id="save-score-btn" class="btn-primary btn-sm">ENREGISTRER</button>
+          </div>
+        </div>
+
+        <div class="overlay-actions">
+          <button id="restart-btn" class="btn-primary">↺ REJOUER</button>
+          <button id="show-gameover-scores-btn" class="btn-secondary">🏆 SCORES</button>
+          <button id="menu-btn" class="btn-secondary">⌂ MENU</button>
+        </div>
+      </div>
+
+      <!-- VUE CLASSEMENT DES SCORES (GAME OVER) -->
+      <div id="gameover-scores-view" class="menu-view hidden">
+        <div class="panel-label title-label">📜 JOURNAL DES SCORES</div>
+        <div id="gameover-leaderboard-list" class="leaderboard-list"></div>
+        <button id="back-to-gameover-btn" class="btn-secondary mt-10">← RETOUR</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- INTERFACE PRINCIPALE DU JEU -->
+  <div id="game-wrapper" class="hidden">
+
+    <!-- PANNEAU GAUCHE -->
+    <div class="side-panel left-panel">
+      <div class="panel-card">
+        <div class="panel-label">SCORE</div>
+        <div class="panel-value" id="score-display">0</div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-label">MEILLEUR</div>
+        <div class="panel-value" id="best-display">0</div>
+      </div>
+      <div class="panel-card">
+        <div class="panel-label">LIGNES</div>
+        <div class="panel-value" id="lines-display">0</div>
+      </div>
+      <div class="panel-card level-card">
+        <div class="panel-label">NIVEAU</div>
+        <div class="panel-value level-value" id="level-display">1</div>
+        <div class="level-bar-bg">
+          <div class="level-bar-fill" id="level-bar"></div>
+        </div>
+      </div>
+      <div class="panel-card controls-card">
+        <div class="panel-label">CONTRÔLES</div>
+        <div class="controls-list">
+          <div class="ctrl"><span>← →</span><span>Déplacer</span></div>
+          <div class="ctrl"><span>↑</span><span>Rotation</span></div>
+          <div class="ctrl"><span>↓</span><span>Descente</span></div>
+          <div class="ctrl"><span>Space</span><span>Chute</span></div>
+          <div class="ctrl"><span>P</span><span>Pause</span></div>
+          <div class="ctrl"><span>M</span><span>Musique</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CANVAS 2D -->
+    <div id="canvas-container">
+      <canvas id="tetris-canvas"></canvas>
+      <div id="pause-overlay" class="hidden">
+        <div class="pause-content">
+          <h2>PAUSE</h2>
+          <button id="resume-btn" class="btn-primary">▶ REPRENDRE</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANNEAU DROIT -->
+    <div class="side-panel right-panel">
+      <!-- PIECE SUIVANTE -->
+      <div class="panel-card next-card">
+        <div class="panel-label">SUIVANT</div>
+        <canvas id="next-canvas" width="120" height="120"></canvas>
+      </div>
+
+      <!-- PANNEAU PARAMÈTRES AUDIO -->
+      <div class="panel-card audio-panel-card">
+        <div class="panel-label">🎵 PARAMÈTRES AUDIO</div>
+
+        <div class="audio-track-section">
+          <div class="audio-sublabel">PISTE ACTUELLE</div>
+          <div class="track-badge" id="track-name-badge">1. ROCK NU-METAL</div>
+          <button id="track-btn" class="btn-secondary btn-sm full-width mt-6">⏭ CHANGER DE PISTE</button>
+        </div>
+
+        <div class="audio-volume-section">
+          <div class="volume-header">
+            <span class="audio-sublabel">VOLUME</span>
+            <span id="volume-value-text" class="volume-val">60%</span>
+          </div>
+          <input type="range" id="volume-slider" min="0" max="100" value="60" class="volume-slider-large" />
+        </div>
+
+        <div class="audio-toggles-section">
+          <button id="music-btn" class="toggle-btn active" title="Activer/Couper la Musique">
+            <span class="tgl-icon">🎵</span> Musique
+          </button>
+          <button id="voice-btn" class="toggle-btn active" title="Activer/Couper la Voix">
+            <span class="tgl-icon">🎤</span> Voix
+          </button>
+        </div>
+      </div>
+
+      <div class="panel-card">
+        <button id="pause-btn" class="btn-secondary full-width">⏸ PAUSE</button>
+      </div>
+      <div class="panel-card">
+        <button id="quit-btn" class="btn-secondary full-width danger">⏹ QUITTER</button>
+      </div>
+      <div class="speed-indicator">
+        <div class="panel-label">VITESSE</div>
+        <div class="speed-dots" id="speed-dots"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTIFICATIONS -->
+  <div id="notification-container"></div>
+
+  <!-- WATERMARK -->
+  <div id="watermark">⚡ ycntrader-12</div>
+
+  <!-- Scripts -->
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
