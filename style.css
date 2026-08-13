@@ -1106,6 +1106,89 @@ body.rtl-mode .modal-header {
   .level-value { font-size: 28px; }
 }
 
+/* Adaptation réactive pour petits écrans en HAUTEUR (ex: Laptops 1366x768) */
+@media (max-height: 850px) {
+  #game-wrapper {
+    padding: 6px 14px;
+    gap: 10px;
+  }
+  .side-panel {
+    gap: 6px;
+  }
+  .panel-card {
+    padding: 8px 12px;
+  }
+  .panel-label {
+    font-size: 9px;
+    margin-bottom: 3px;
+  }
+  .panel-value {
+    font-size: 22px;
+  }
+  .level-value {
+    font-size: 28px;
+  }
+  #score-display, #best-display {
+    font-size: 18px;
+  }
+  .audio-panel-card {
+    gap: 6px;
+  }
+  .ctrl {
+    padding: 2px 0;
+  }
+  .controls-list {
+    gap: 3px;
+  }
+  .speed-indicator {
+    margin-top: auto;
+  }
+}
+
+@media (max-height: 720px) {
+  #game-wrapper {
+    padding: 4px 8px;
+    gap: 6px;
+  }
+  .side-panel {
+    gap: 4px;
+  }
+  .panel-card {
+    padding: 6px 10px;
+  }
+  .panel-label {
+    font-size: 8.5px;
+    margin-bottom: 2px;
+  }
+  .panel-value {
+    font-size: 18px;
+  }
+  .level-value {
+    font-size: 22px;
+  }
+  #score-display, #best-display {
+    font-size: 16px;
+  }
+  .audio-sublabel {
+    font-size: 8px;
+  }
+  .track-badge {
+    font-size: 10px;
+  }
+  .btn-secondary {
+    padding: 6px 10px;
+    font-size: 10px;
+  }
+  .toggle-btn {
+    padding: 4px 8px;
+    font-size: 10px;
+  }
+  .audio-panel-card {
+    gap: 4px;
+  }
+}
+
+
 /* Adaptation réactive complète Mobile (< 850px) */
 @media (max-width: 850px) {
   html, body {
