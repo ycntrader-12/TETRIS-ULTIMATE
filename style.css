@@ -335,6 +335,15 @@ body::before {
   20%     { transform: translate(2px,0); }
   30%     { transform: none; }
 }
+.gameover-title.victory-glow {
+  color: #ffd700;
+  text-shadow: 0 0 20px rgba(255,215,0,0.8), 0 0 40px rgba(255,165,0,0.5), 0 0 60px rgba(0,255,136,0.3);
+  animation: victoryPulse 1.2s ease-in-out infinite;
+}
+@keyframes victoryPulse {
+  0%,100% { text-shadow: 0 0 20px rgba(255,215,0,0.8), 0 0 40px rgba(255,165,0,0.5); transform: scale(1); }
+  50%     { text-shadow: 0 0 30px rgba(255,215,0,1), 0 0 60px rgba(255,165,0,0.8), 0 0 80px rgba(0,255,136,0.5); transform: scale(1.05); }
+}
 
 .final-stats { display: flex; gap: 24px; justify-content: center; margin-bottom: 2px; }
 .stat-item { display: flex; flex-direction: column; align-items: center; gap: 3px; }

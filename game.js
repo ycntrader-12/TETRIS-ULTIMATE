@@ -943,6 +943,7 @@ const TRANSLATIONS = {
     game_mode: "MODE DE JEU :",
     initial_level: "Niveau initial :",
     gameover_title: "GAME OVER",
+    victory_title: "🏆 VICTOIRE !",
     final_score: "SCORE",
     final_level: "NIVEAU",
     final_lines: "LIGNES",
@@ -1019,6 +1020,7 @@ const TRANSLATIONS = {
     game_mode: "GAME MODE:",
     initial_level: "Starting Level:",
     gameover_title: "GAME OVER",
+    victory_title: "🏆 VICTORY!",
     final_score: "SCORE",
     final_level: "LEVEL",
     final_lines: "LINES",
@@ -1095,6 +1097,7 @@ const TRANSLATIONS = {
     game_mode: "نمط اللعبة:",
     initial_level: "المستوى الأولي:",
     gameover_title: "انتهت اللعبة",
+    victory_title: "🏆 فوز!",
     final_score: "النتيجة",
     final_level: "المستوى",
     final_lines: "الصفوف",
@@ -1171,6 +1174,7 @@ const TRANSLATIONS = {
     game_mode: "MODO DE JUEGO:",
     initial_level: "Nivel Inicial:",
     gameover_title: "GAME OVER",
+    victory_title: "🏆 ¡VICTORIA!",
     final_score: "PUNTUACIÓN",
     final_level: "NIVEL",
     final_lines: "LÍNEAS",
@@ -1872,8 +1876,23 @@ class TetrisController {
     this._stopLoops();
     this.audio.stop();
     this.audio.stopAutoMusicSwitch();
-    this.audio.playGameOver();
-    this.voice.onGameOver();
+
+    // ── Détection Victoire vs Défaite ──
+    // Victoire si : score >= 5000 OU lignes >= 20 OU niveau >= 5
+    // OU si mode Time Attack terminé naturellement (temps écoulé)
+    const isTimeAttackEnd = this.selectedMode === 'timeattack' && this.game.modeTimeLeft <= 0;
+    const isVictory = isTimeAttackEnd ||
+      this.game.score >= 5000 ||
+      this.game.lines >= 20 ||
+      this.game.level >= 5;
+
+    if (isVictory) {
+      this.audio.playVictorySound();
+      this.voice.onVictory();
+    } else {
+      this.audio.playDefeatSound();
+      this.voice.onDefeat();
+    }
 
     setTimeout(() => {
       this.game.running = false;
@@ -1882,6 +1901,15 @@ class TetrisController {
       this.ui.finalScore.textContent = this.game.score.toLocaleString();
       this.ui.finalLevel.textContent = this.game.level;
       this.ui.finalLines.textContent = this.game.lines;
+
+      // Mettre à jour le titre de l'écran Game Over
+      const lang = this.options.lang || 'fr';
+      const dict = TRANSLATIONS[lang] || TRANSLATIONS.fr;
+      const titleEl = document.querySelector('.gameover-title');
+      if (titleEl) {
+        titleEl.textContent = isVictory ? (dict.victory_title || '🏆 VICTORY!') : (dict.gameover_title || 'GAME OVER');
+        titleEl.classList.toggle('victory-glow', isVictory);
+      }
 
       if (this.ui.initialsBox) {
         this.ui.initialsBox.style.display = this.game.score > 0 ? 'flex' : 'none';

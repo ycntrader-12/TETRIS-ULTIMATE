@@ -1078,6 +1078,138 @@ class TetrisAudio {
     noise.connect(filter); filter.connect(g); g.connect(this.sfxGain);
     noise.start(t); noise.stop(t + dur);
   }
+
+  // ── SON DE VICTOIRE — RIFF ROCK/METAL ÉNERGIQUE ──
+  playVictorySound() {
+    if (!this.ctx || this.isMuted) return;
+    const t = this.ctx.currentTime;
+
+    // 1. Power chords ascendants avec distorsion (E → A → B → E octave)
+    const chords = [
+      { root: 82.41, time: 0 },      // E2
+      { root: 110.00, time: 0.25 },   // A2
+      { root: 123.47, time: 0.50 },   // B2
+      { root: 164.81, time: 0.75 }    // E3 (octave triomphant)
+    ];
+
+    chords.forEach(ch => {
+      const fifth = ch.root * 1.4983;
+      const oscR = this.ctx.createOscillator(); oscR.type = 'sawtooth'; oscR.frequency.setValueAtTime(ch.root, t + ch.time);
+      const oscF = this.ctx.createOscillator(); oscF.type = 'sawtooth'; oscF.frequency.setValueAtTime(fifth, t + ch.time);
+
+      const dist = this.ctx.createWaveShaper();
+      dist.curve = this.distortionCurve;
+      dist.oversample = '4x';
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass'; filter.frequency.setValueAtTime(1800, t + ch.time);
+
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0, t + ch.time);
+      g.gain.linearRampToValueAtTime(0.3, t + ch.time + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.08, t + ch.time + 0.22);
+      g.gain.linearRampToValueAtTime(0, t + ch.time + 0.28);
+
+      oscR.connect(dist); oscF.connect(dist); dist.connect(filter); filter.connect(g); g.connect(this.sfxGain);
+      oscR.start(t + ch.time); oscF.start(t + ch.time);
+      oscR.stop(t + ch.time + 0.3); oscF.stop(t + ch.time + 0.3);
+    });
+
+    // 2. Arpège triomphant (harmoniques brillantes)
+    const triumphNotes = [329.63, 440.00, 523.25, 659.25, 783.99, 1046.50];
+    triumphNotes.forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(freq, t + 1.0 + i * 0.06);
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.22, t + 1.0 + i * 0.06);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 1.0 + i * 0.06 + 0.35);
+      osc.connect(g); g.connect(this.sfxGain);
+      osc.start(t + 1.0 + i * 0.06); osc.stop(t + 1.0 + i * 0.06 + 0.4);
+    });
+
+    // 3. Crash cymbal
+    const crashLen = this.ctx.sampleRate * 0.8;
+    const crashBuf = this.ctx.createBuffer(1, crashLen, this.ctx.sampleRate);
+    const crashData = crashBuf.getChannelData(0);
+    for (let i = 0; i < crashLen; i++) crashData[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / crashLen, 1.5);
+    const crashSrc = this.ctx.createBufferSource(); crashSrc.buffer = crashBuf;
+    const crashFilter = this.ctx.createBiquadFilter(); crashFilter.type = 'highpass'; crashFilter.frequency.value = 6000;
+    const crashG = this.ctx.createGain();
+    crashG.gain.setValueAtTime(0.35, t + 1.0);
+    crashG.gain.exponentialRampToValueAtTime(0.001, t + 1.8);
+    crashSrc.connect(crashFilter); crashFilter.connect(crashG); crashG.connect(this.sfxGain);
+    crashSrc.start(t + 1.0); crashSrc.stop(t + 1.85);
+
+    // 4. Double-kick percussif
+    [1.0, 1.08].forEach(offset => {
+      const kick = this.ctx.createOscillator();
+      kick.type = 'sine';
+      kick.frequency.setValueAtTime(180, t + offset);
+      kick.frequency.exponentialRampToValueAtTime(30, t + offset + 0.2);
+      const kg = this.ctx.createGain();
+      kg.gain.setValueAtTime(0.8, t + offset);
+      kg.gain.exponentialRampToValueAtTime(0.001, t + offset + 0.25);
+      kick.connect(kg); kg.connect(this.sfxGain);
+      kick.start(t + offset); kick.stop(t + offset + 0.3);
+    });
+  }
+
+  // ── SON DE DÉFAITE — CHUTE DRAMATIQUE ──
+  playDefeatSound() {
+    if (!this.ctx || this.isMuted) return;
+    const t = this.ctx.currentTime;
+
+    // 1. Descente chromatique sombre (notes qui tombent)
+    const fallNotes = [440, 415.30, 392.00, 349.23, 329.63, 293.66, 261.63, 220.00, 196.00, 164.81, 130.81];
+    fallNotes.forEach((freq, i) => {
+      const osc = this.ctx.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(freq, t + i * 0.1);
+
+      const dist = this.ctx.createWaveShaper();
+      dist.curve = this.distortionCurve;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1200 - i * 80, t + i * 0.1);
+
+      const g = this.ctx.createGain();
+      g.gain.setValueAtTime(0.25, t + i * 0.1);
+      g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.1 + 0.3);
+
+      osc.connect(dist); dist.connect(filter); filter.connect(g); g.connect(this.sfxGain);
+      osc.start(t + i * 0.1); osc.stop(t + i * 0.1 + 0.35);
+    });
+
+    // 2. Sub-boom d'impact profond (après la descente)
+    const boomTime = t + fallNotes.length * 0.1;
+    const boom = this.ctx.createOscillator();
+    boom.type = 'sine';
+    boom.frequency.setValueAtTime(100, boomTime);
+    boom.frequency.exponentialRampToValueAtTime(20, boomTime + 0.6);
+    const boomDist = this.ctx.createWaveShaper(); boomDist.curve = this.distortionCurve;
+    const boomG = this.ctx.createGain();
+    boomG.gain.setValueAtTime(0.8, boomTime);
+    boomG.gain.exponentialRampToValueAtTime(0.001, boomTime + 0.7);
+    boom.connect(boomDist); boomDist.connect(boomG); boomG.connect(this.sfxGain);
+    boom.start(boomTime); boom.stop(boomTime + 0.75);
+
+    // 3. Bruit de verre brisé décalé
+    setTimeout(() => this.playGlassBreak(), (fallNotes.length * 0.1) * 1000 + 50);
+
+    // 4. Ton grave résonant final
+    const drone = this.ctx.createOscillator();
+    drone.type = 'sawtooth';
+    drone.frequency.setValueAtTime(55, boomTime + 0.1);
+    const droneFilter = this.ctx.createBiquadFilter();
+    droneFilter.type = 'lowpass'; droneFilter.frequency.setValueAtTime(400, boomTime + 0.1);
+    const droneG = this.ctx.createGain();
+    droneG.gain.setValueAtTime(0.2, boomTime + 0.1);
+    droneG.gain.exponentialRampToValueAtTime(0.001, boomTime + 1.2);
+    drone.connect(droneFilter); droneFilter.connect(droneG); droneG.connect(this.sfxGain);
+    drone.start(boomTime + 0.1); drone.stop(boomTime + 1.3);
+  }
 }
 
 window.TetrisAudio = TetrisAudio;
@@ -1229,6 +1361,65 @@ class TetrisVoice {
       ar: "خسرتي يا الساط! عاود لّعب!",
       es: "¡Fin del Juego!"
     }, { rate: 0.85, pitch: 0.7 });
+  }
+
+  // ── VICTOIRE : Phrase d'encouragement puissante ──
+  onVictory() {
+    if (!this.enabled) return;
+    const phrases = [
+      {
+        fr: "Tu gères comme un champion ! Incroyable !",
+        en: "You're a champion! Absolutely incredible!",
+        ar: "يا الشامبيون! ما كاينش بحالك!",
+        es: "¡Eres un campeón! ¡Increíble!"
+      },
+      {
+        fr: "Victoire écrasante ! Tu es un légende !",
+        en: "Crushing victory! You're a legend!",
+        ar: "فوز ساحق يا البطل! أنت أسطورة!",
+        es: "¡Victoria aplastante! ¡Eres una leyenda!"
+      },
+      {
+        fr: "Magnifique ! Performance de champion du monde !",
+        en: "Magnificent! World champion performance!",
+        ar: "ما شاء الله! أداء بطل العالم!",
+        es: "¡Magnífico! ¡Rendimiento de campeón mundial!"
+      }
+    ];
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    // Delay to let the victory sound play first
+    setTimeout(() => {
+      this.say(phrase, { rate: 1.1, pitch: 1.3, vol: 1.0 });
+    }, 1200);
+  }
+
+  // ── DÉFAITE : Phrase de motivation post-défaite ──
+  onDefeat() {
+    if (!this.enabled) return;
+    const phrases = [
+      {
+        fr: "C'est la défaite... Mais tu reviendras plus fort !",
+        en: "That's a fall... But you'll come back stronger!",
+        ar: "خسرتي يا الساط! ولكن المرة الجاية غادي تقلب الميزان!",
+        es: "Has caído... ¡Pero volverás más fuerte!"
+      },
+      {
+        fr: "La chute est dure... Mais un champion se relève toujours !",
+        en: "The fall is hard... But a champion always rises!",
+        ar: "الخسارة صعيبة... ولكن البطل ديما كينوض!",
+        es: "La caída es dura... ¡Pero un campeón siempre se levanta!"
+      },
+      {
+        fr: "Pas cette fois... Mais la prochaine sera la bonne !",
+        en: "Not this time... But next time you'll own it!",
+        ar: "ماشي هاد المرة... ولكن الجاية ديالك!",
+        es: "No esta vez... ¡Pero la próxima será la tuya!"
+      }
+    ];
+    const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+    setTimeout(() => {
+      this.say(phrase, { rate: 0.9, pitch: 0.75, vol: 1.0 });
+    }, 1400);
   }
 
   onTSpin(type) {
